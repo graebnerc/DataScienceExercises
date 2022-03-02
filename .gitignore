@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/tutorials/*/*.html
+**/.DS_Store
+.DS_Store

@@ -1,0 +1,376 @@
+---
+title: "Exercises 1: Basics in R"
+author: "Introduction to data science: session 3"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+gradethis::gradethis_setup()
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## General remarks
+*You should complete these exercises at least once before the next lecture.*
+*In case you do not understand a solution, please make a post on the course*
+*homepage and discuss your problems with the other participants. In case this*
+*does not help we can take up the problem in the next session. Please note that*
+*feedback on the exercises is highly welcome!*
+
+## Objects, functions, and assignments
+
+### Content quiz
+
+```{r assignquiz}
+quiz(
+  question(
+    "Which of the following commands is equivalend to `xx <- 2`?",
+    answer('assign("xx", 2)', correct = TRUE),
+    answer("xx -> 2"),
+    answer("name('xx', 2)"),
+    answer("assign(xx, 2)"), 
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "Which of the following statements about objects and names is correct?",
+    answer("Every object can only have a unique name, just as every name must point to a unique object)!"),
+    answer("While every object must have a unique name, each name can point to none, one, or several objects!"),
+    answer("Names can point to multiple objects, and objects can have more than one name."),
+    answer("An object can have many names, only every name must point to a unique object", 
+           correct = TRUE), 
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "What can you do to remove all object-name assignment in your current R session?",
+    answer("Restart the R session!"),
+    answer("Call `rm(name)` for each assignment.", 
+           correct = TRUE),
+    answer("Click on the broom in the upper right environment panel in R-Studio", 
+           correct = TRUE),
+    answer("Call `rm(list=ls())` in the console.", 
+           correct = TRUE),
+    answer("Remove the assignment from the script and re-run the script from above."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    )
+)
+```
+
+### Coding exercise 
+
+Compute the following mathematical operations in R:
+
+$$10+25$$
+
+```{r ex-addition, exercise=TRUE}
+
+```
+
+<div id="ex-addition-hint">
+**Hint:** It might be a good idea to search for something like 'addition in R' in the web.
+</div>
+
+```{r ex-addition-check}
+grade_result(
+  pass_if(~identical(.result, 10+25))
+)
+```
+
+$$50\cdot 2$$
+
+```{r ex-multiplication, exercise=TRUE}
+
+```
+
+<div id="ex-multiplication-hint">
+**Hint:** It might be a good idea to search for something like 'multiplication in R' in the web.
+</div>
+
+```{r ex-multiplication-check}
+grade_result(
+  pass_if(~identical(.result, 50*2))
+)
+```
+
+$$\frac{27}{4}$$
+
+```{r ex-division, exercise=TRUE}
+
+```
+
+<div id="ex-division-hint">
+**Hint:** It might be a good idea to search for something like 'division in R' in the web.
+</div>
+
+```{r ex-division-check}
+grade_result(
+  pass_if(~identical(.result, 27/4))
+)
+```
+
+$$500-650$$
+
+```{r ex-substraction, exercise=TRUE}
+
+```
+
+<div id="ex-substraction-hint">
+**Hint:** It might be a good idea to search for something like 'substraction in R' in the web.
+</div>
+
+```{r ex-substraction-check}
+grade_result(
+  pass_if(~identical(.result, 500-650))
+)
+```
+
+$$2^4$$
+
+```{r ex-power, exercise=TRUE}
+
+```
+
+<div id="ex-power-hint">
+**Hint:** It might be a good idea to search for something like 'raise to power in R' in the web.
+</div>
+
+```{r ex-power-check}
+grade_result(
+  pass_if(~identical(.result, 2**4))
+)
+```
+
+$$\sqrt{3}\cdot 60$$
+
+```{r ex-root, exercise=TRUE}
+
+```
+
+<div id="ex-root-hint">
+**Hint:** It might be a good idea to search for something like 'root in R' in the web.
+</div>
+
+```{r ex-root-check}
+grade_result(
+  pass_if(~identical(.result, sqrt(3)*60))
+)
+```
+
+$$50 \cdot (4+2)^3$$
+
+```{r ex-chained, exercise=TRUE}
+
+```
+
+<div id="ex-chained-hint">
+**Hint:** It might be a good idea to search for something like 'calculator use r' in the web.
+</div>
+
+```{r ex-chained-check}
+grade_result(
+  pass_if(~identical(.result, 50*(4+2)**3))
+)
+```
+
+Do the following chain computation in R. Assign a name to each intermediate 
+result and then return the overall result.
+
+*Hint: avoid overwriting existing R functions such as `c()` since this can be*
+*confusing. Better use, e.g., names such as `var_c` instead.*
+
+\begin{align*}
+a &= 10 + 25\\
+b &= a \cdot 40\\
+c &= b - 100\\
+d &= c \cdot 3\\
+e &= \sqrt{d}\\
+f &= \frac{e}{1000}\\
+g &= f^3
+\end{align*}
+
+```{r ex-chained-full, exercise=TRUE, exercise.lines=8}
+
+```
+
+<div id="ex-chained-full-hint">
+**Hint:** After assigning an intermediate result to a name you can call it 
+via this name in the next calculation step. And dont forget to call the final
+result in the last line!
+</div>
+
+```{r ex-chained-full-check}
+a_ <- 10 + 25
+b_ <- a_ * 40
+c_ <- b_ - 100
+d_ <- c_ * 3
+e_ <- sqrt(d_)
+f_ <- e_ / 1000
+g_ <- f_^3
+
+grade_result(
+  pass_if(~identical(.result, g_))
+)
+```
+
+## Functions
+
+### Content quiz
+
+```{r functionquiz}
+quiz(
+  question(
+    "Which of the following statements about functions in R is/are correct?",
+    answer("Functions apply a certain routine on an input, thereby producing (almost always) an output.", correct=TRUE),
+    answer("Are the R equivalent to mathematical functions and map numbers from one mathematical space into another."),
+    answer("Functions facilitate the debugging of your code, especially if they encapsulate routines that use multiple times.", correct=TRUE),
+    answer("Functions are difficult to define for yourself, so you should mainly use pre-defined functions and avoid user-written functions whenever possible."),
+    answer("As a rule of thumb, whenever you use some code more than twice, you should encapsulate it into a function."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "What do we need optional arguments for?",
+    answer("They represent the input to a function and are, thus, necessary for the function to produce an output."),
+    answer("They usually help us to adjust the routine implemented in the function to the particular case at hand.", correct=TRUE),
+    answer("These kind of arguments are unnecessary. Since they are optional its safe to ignore them until you become a more experienced programmer."),
+    answer("All arguments to functions are optional in the strict sense, so there is nothing special about them."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "Consider the function `sum()`. What is its main argument?",
+    answer("An arbitrary number of numeric or logical atomic vectors", correct=TRUE),
+    answer("A single vector containing numerical elements that the function can sum up."),
+    answer("A logical vector named `na.rm`, indicating whether the function should ignore missing values when suming up a vector."),
+    answer("The name of the vector of which you want to sum up the elements."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    "Consider the function `sum()`. What is its optional argument?",
+    answer("A logical vector named `na.rm`, indicating whether the function should ignore missing values when suming up a vector.", correct=TRUE),
+    answer("The name of the vector of which you want to sum up the elements."),
+    answer("A single vector containing numerical elements that the function can sum up."),
+    answer("The function `sum()` has no optional arguments."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    "Only optional arguments can be specified by name. Is this true?",
+    answer("No, you can also specify mandatory arguments by name, but this is not necessary.", correct=TRUE),
+    answer("Yes, mandatory arguments have no name and must be entered in the sequence they are mentioned in the function definition."),
+    answer("No, in fact only mandatory arguments can be specified by name, optional arguments are specified by position."),
+    answer("Yes, the name of mandatory arguments is only used for documentation purposes."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    "Variables that are defined within the function body...",
+    answer("disappear after the function has been called.", correct=TRUE),
+    answer("remain available after calling the function and can be used to check intermediate results."),
+    answer("disappear by default, but can be kept if the universal optional argument `keep_int_vars` is set to `TRUE`."), 
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+### Coding exercises
+
+Define a function called `my_var_func` that takes a vector of numbers as an input
+and calculates the sample variance. Note that the formula for the variance is:
+
+$$\frac{\sum_i(x_i-\bar{x})^2}{n-1}$$
+
+where $\bar{x}$ is the mean of $x$, and $n$ the number of elements in x.
+Note also that $\bar{x}$ can be computed as `mean(x)` and a sum can be 
+computed using `sum()`.
+
+Test your function by applying it to the pre-defined input `test_vector`.
+
+```{r ex-deffun-setup}
+test_vector <- seq(1, 8, by=0.25)
+```
+
+```{r ex-deffun, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-deffun-hint-1}
+my_var_func <- function(x){
+  # function body
+}
+```
+
+```{r ex-deffun-hint-2}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  # ...
+}
+```
+
+```{r ex-deffun-hint-3}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  # ...
+}
+```
+
+```{r ex-deffun-hint-4}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  squared_dev <- (x - x_mean)**2
+  # ...
+}
+```
+
+```{r ex-deffun-solution}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  squared_dev <- (x - x_mean)**2
+  x_var <- sum(squared_dev) / (x_len-1)
+  return(x_var)
+}
+```
+
+```{r ex-deffun-check}
+grade_result(
+  pass_if(~identical(.result, var(test_vector)))
+)
+```
+
+Take the function you defined above and document it according to the rules
+that you have read about in the tutorial.
+
+```{r ex-docfun, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-docfun-hint-1}
+# Each documentation should contain a short title, a short description, the
+# function arguments and the return value.
+```
+
+```{r ex-docfun-hint-2}
+# The documentation of a function must come immediately before the function
+# definition and each line of the documentation starts with `#'`. 
+# In the first line you provide a title, which must not be longer than 80 
+# characetrs.
+
+# Then, after inserting a blank line you describe what the function does in a bit 
+# more detail. Then, you describe each argument by using the decorator `@param` 
+# at the beginning of the lines. Finally, after another blank line, you describe 
+# the output of the function after starting the line with the decorator `@return`.
+```
+
+```{r ex-docfun-solution}
+#' Computes the variance of a vector
+#' 
+#' This function takes a numeric vector as input and computes the sample
+#'  variance. It does not work if missing values are presend.
+#' @param x An atomic vector of type `double` or `integer`
+#' @return The sample variance of `x` as `double`
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  squared_dev <- (x - x_mean)**2
+  x_var <- sum(squared_dev) / (x_len-1)
+  return(x_var)
+}
+```
