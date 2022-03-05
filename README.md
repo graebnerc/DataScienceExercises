@@ -13,18 +13,20 @@ remotes::install_github(repo = "graebnerc/DataScienceExercises")
 Then you can complete exercises by calling the following command:
 
 ```
-learnr::run_tutorial("name_of_exercise_sheet", package = "DataScienceExercises")
+learnr::run_tutorial(
+  name = "name_of_exercise_sheet", 
+  package = "DataScienceExercises", 
+  shiny_args=list("launch.browser"=TRUE))
 ```
-
-I recommend clicking on 'Open in browser' to complete the exercises in your 
-browser.
 
 You get information about the relevant names of the exercises via the course
 homepage. The first exercise sheet, for instance, is called "Basics" and is
 called by:
 
 ```
-learnr::run_tutorial("Basics", package = "DataScienceExercises")
-```
+learnr::run_tutorial(
+  name = "Basics", 
+  package = "DataScienceExercises", 
+  shiny_args=list("launch.browser"=TRUE))```
 
 For bug reports and feedback please use the Github issue tracker.
