@@ -224,7 +224,7 @@ quiz(
     answer("Are the R equivalent to mathematical functions and map numbers from one mathematical space into another."),
     answer("Functions facilitate the debugging of your code, especially if they encapsulate routines that use multiple times.", correct=TRUE),
     answer("Functions are difficult to define for yourself, so you should mainly use pre-defined functions and avoid user-written functions whenever possible."),
-    answer("As a rule of thumb, whenever you use some code more than twice, you should encapsulate it into a function."), 
+    answer("As a rule of thumb, whenever you use some code more than twice, you should encapsulate it into a function.", correct=TRUE), 
     allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(
