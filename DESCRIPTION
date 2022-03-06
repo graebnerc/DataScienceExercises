@@ -16,7 +16,8 @@ License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    gradethis,
-    learnr
+    gradethis (>= 0.2.5.9000),
+    htmltools (>= 0.5.2),
+    learnr (>= 0.10.1.9019)
 Depends: 
     R (>= 3.50)
