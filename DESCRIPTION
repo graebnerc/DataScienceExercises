@@ -1,7 +1,7 @@
 Package: DataScienceExercises
 Type: Package
 Title: Exercises for for course Introduction to Data Science at the EUF
-Version: 0.0.0.9002
+Version: 0.0.0.9003
 Authors@R: 
     person(
       given = "Claudius", 
@@ -16,8 +16,10 @@ License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    dplyr (>= 1.0.8),
     gradethis (>= 0.2.5.9000),
     htmltools (>= 0.5.2),
-    learnr (>= 0.10.1.9019)
+    learnr (>= 0.10.1.9019),
+    stringr (>= 1.4.0)
 Depends: 
     R (>= 3.50)
