@@ -7,6 +7,8 @@ library(learnr)
 library(tibble)
 library(stringr)
 library(dplyr)
+library(gradethis)
+library(ggcheck)
 
 v_1 <- 1:4
 v_2 <- letters[1:4]
