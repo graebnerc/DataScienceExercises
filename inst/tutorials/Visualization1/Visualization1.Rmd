@@ -1,0 +1,1075 @@
+---
+title: "Exercises 4: Visualization I"
+author: "Introduction to data science: session 5"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(ggcheck)
+library(ggplot2)
+library(scales)
+library(gradethis)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+
+nycflights21_small <- DataScienceExercises::nycflights21_small
+nycflights21_small <- dplyr::mutate(nycflights21_small, month=factor(month))
+set.seed(123)
+rdn_indices <- sample(1:nrow(nycflights21_small), 10000, replace = FALSE)
+nycflights21_small <- nycflights21_small[rdn_indices, ]
+```
+
+## Content quiz
+
+```{r visquiz}
+quiz(
+  question(
+    paste0(
+    "When choosing the right graph you should think about what your graph ",
+    "should achieve. Which are the four main goals discussed in the ",
+    "lecture?"
+    ),
+    answer('Comparison', correct = TRUE),
+    answer('Distribution', correct = TRUE),
+    answer('Composition', correct = TRUE),
+    answer('Relationship', correct = TRUE),
+    answer('Accuracy'),
+    answer('Consistency'),
+    answer('Measurement'),
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    paste0(
+      "Suppose you defined an object using `ggplot2::ggplot()`. ",
+      "What do you need to do to actually render the plot?"
+    ),
+    answer('Call the object or save it via `ggplot2::ggsave()`', correct = TRUE),
+    answer('Nothing, `ggplot2::ggplot()` already does the rendering for you'),
+    answer('Call `ggplot2::gg_render()` with the plot as the main argument'),
+    answer('Use R-Studios `Save as` functionality'),
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    paste0(
+      "Aesthetics are visual properties of plots that are mapped to variables ",
+      "via the function `ggplot2::aes()` or set manually.",
+      "Which of the following things are aesthetics?"
+    ),
+    answer('Size', correct = TRUE),
+    answer('Shape', correct = TRUE),
+    answer('Color', correct = TRUE),
+    answer('Fill', correct = TRUE),
+    answer('Point'),
+    answer('Bar'),
+    answer('Line'),
+    answer('Smooth'),
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+    question(
+    paste0(
+      "Geometrical objects used to represent data are called 'geoms' in the ",
+      "`ggplot2` context and are added to a plot via `ggplot2::geom_*()`.",
+      "What of the following things can be used as geoms?"
+    ),
+    answer('Size'),
+    answer('Shape'),
+    answer('Color'),
+    answer('Fill'),
+    answer('Point', correct = TRUE),
+    answer('Bar', correct = TRUE),
+    answer('Line', correct = TRUE),
+    answer('Smooth', correct = TRUE),
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "What are 'facets' used for?",
+    answer(paste0(
+        'They can complement or substitute aesthetic mappings:",
+        "you can split your plot into facets, i.e. subplots that each",
+        "display one subset of the data.'), 
+      correct = TRUE),
+    answer('Point'),
+    answer('Bar'),
+    answer('Line'),
+    answer('Smooth'),
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+    question(
+    "What is true about the relationship between geoms and aesthetics?",
+    answer(paste0(
+        'Not every aesthetic works with every geom and vice versa.'), 
+      correct = TRUE),
+    answer('Every aesthetic can be combined, in principle, with every geom.'),
+    answer(paste0(
+      "For most geoms, there are some aesthetics that do not work,", 
+      "but each aesthetic can be used to specify any geom.")),
+    answer(paste0(
+      'Aesthetics and geoms and two substitutive ways to map data onto ', 
+      'visual properties of a plot.')),
+    answer(paste0(
+      'Since aesthetics and geoms are used for different purposes, there is no ', 
+      'meaningful relationship between them.')),
+    allow_retry = TRUE, random_answer_order = TRUE
+  )
+)
+```
+
+## Coding exercise - Part 1
+
+**Note:** 
+*Automated feedback does not yet work well with visualization tasks.*
+*Thus, for some exercises you must compare your result with the solution*
+*yourself. These are the exercises that are lacking the `Submit Answer` button.*
+
+The following data set called `nycflights21_small` contains information about
+flights from the New York City airports in 2021.
+
+```{r}
+head(nycflights21_small)
+```
+
+The columns mean the following:
+
+* `dep_delay`, `arr_delay`: Departure and arrival delays, in minutes. Negative times * represent early departures/arrivals.
+* `month`: Month of departure.
+* `carrier`: Two letter carrier abbreviation.
+* `distance`: Distance between airports, in miles.
+
+Start by producing a very simple plot where you simply take the data set, and
+represent the relationship between `arr_delay` and `dep_delay` using a 
+scatterplot. Here, `arr_delay` should go on the y-axis, `dep_delay` on 
+the x-axis.
+
+```{r ex-vis1, exercise=TRUE}
+
+```
+
+```{r ex-vis1-hint-1}
+ggplot(
+  data = ____, 
+  mapping = ____
+  ) +
+  geom_____()
+```
+
+```{r ex-vis1-hint-2}
+ggplot(
+  data = ____, 
+  mapping = aes(____)
+  ) +
+  geom_____()
+```
+
+```{r ex-vis1-hint-3}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=____, y=____)
+  ) +
+  geom____()
+```
+
+```{r ex-vis1-hint-4}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y_____)
+  ) +
+  geom_point()
+```
+
+```{r ex-vis1-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay)
+  ) +
+  geom_point()
+```
+
+```{r ex-vis1-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, "point", exact = FALSE), 
+          message = paste0(
+            "To produce a scatterplot you must use the geom 'point'."
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=dep_delay, y=arr_delay), exact = TRUE), 
+          message = paste0(
+            "You should map the variable `dep_delay` to the x-axis, and the ",
+            "variable `arr_delay` to the y-axis! Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  pass()
+}
+)
+```
+
+Create the same plot as in the exercise before, but (1) map the variable `carrier`
+to the aesthetic 'color', and (2) make sure the points have a transparency of 50%.
+
+
+```{r ex-vis2, exercise=TRUE}
+
+```
+
+```{r ex-vis2-hint-1}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, ____)
+  ) +
+  geom_point(____)
+```
+
+```{r ex-vis2-hint-2}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=____)
+  ) +
+  geom_point(____)
+```
+
+```{r ex-vis2-hint-3}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=____)
+  ) +
+  geom_point(alpha=____)
+```
+
+```{r ex-vis2-hint-4}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=____)
+  ) +
+  geom_point(alpha=0.5)
+```
+
+```{r ex-vis2-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=carrier)
+  ) +
+  geom_point(alpha=0.5)
+```
+
+```{r ex-vis2-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, "point", exact = FALSE), 
+          message = paste0(
+            "To produce a scatterplot you must use the geom 'point'."
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=dep_delay, y=arr_delay, color=carrier), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `dep_delay` to the x-axis, the ",
+            "variable `arr_delay` to the y-axis, and the variable `carrier` to ",
+            "the color! Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!uses_geom_params(.result, "point", list(alpha = 0.5)), 
+          message = paste0(
+            "Your point are not fifty percent transparent. You can set ",
+            "transparency within the geom call. Google the relevant aesthetic!"
+            )
+          )
+  pass()
+})
+```
+
+Assume the plot from the previous exercise was saved with the name `plot_1`.
+Adjust the following labels:
+
+* Title should be: "Delays in departure and arrival in 2021"
+* Title of x-axis should be: "Departure delay (in min.)"
+* Title of y-axis should be: "Arrival delay (in min.)"
+* Caption should be: "Data: anyflights package."
+
+```{r ex-vis3-setup}
+plot_1 <- ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=carrier)
+  ) +
+  geom_point(alpha=0.5)
+```
+
+```{r ex-vis3, exercise=TRUE}
+
+```
+
+```{r ex-vis3-hint-1}
+plot_1 +
+  ____(
+    ____ = ____,
+    ____ = ____,
+    ____ = ____,
+    ____ = ____
+  )
+```
+
+```{r ex-vis3-hint-2}
+plot_1 +
+  labs(
+    ____ = ____,
+    ____ = ____,
+    ____ = ____,
+    ____ = ____
+  )
+```
+
+```{r ex-vis3-hint-3}
+plot_1 +
+  labs(
+    title = ____,
+    ____ = ____,
+    ____ = ____,
+    ____ = ____
+  )
+```
+
+```{r ex-vis3-hint-4}
+plot_1 +
+  ____(
+    title = "Delays in departure and arrival in 2021",
+    ____ = ____,
+    ____ = ____,
+    ____ = ____
+  )
+```
+
+```{r ex-vis3-hint-5}
+plot_1 +
+  ____(
+    title = "Delays in departure and arrival in 2021",
+    x = ____,
+    y = ____,
+    caption = ____
+  )
+```
+
+```{r ex-vis3-solution}
+plot_1 +
+  labs(
+    title = "Delays in departure and arrival in 2021",
+    x = "Departure delay (in min.)",
+    y = "Arrival delay (in min.)",
+    caption = "Data: anyflights package."
+  )
+```
+
+```{r ex-vis3-check}
+x_label <- "Departure delay (in min.)"
+y_label <- "Arrival delay (in min.)"
+title_label <- "Delays in departure and arrival in 2021"
+cap_label <- "Data: anyflights package."
+
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`.",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, "point", exact = FALSE), 
+          message = paste0(
+            "To produce a scatterplot you must use the geom 'point'."
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=dep_delay, y=arr_delay, color=carrier), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `dep_delay` to the x-axis, the ",
+            "variable `arr_delay` to the y-axis, and the variable `carrier` to ",
+            "the color! Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          ) 
+  res_labs <- get_labels(.result)
+  fail_if(is.null(res_labs$x),
+          message = paste0(
+            "Label for x axis not set. Try using the `ggplot2::labs()` function."))
+  fail_if(is.null(res_labs$y),
+          message = paste0(
+            "Label for y axis not set. Try using the `ggplot2::labs()` function."))
+  fail_if(res_labs$x != x_label,
+          message = paste0(
+            "The label of the x-axis should be '", x_label, "', ",
+            "not '{res_labs$x}' as in your case!"))
+  fail_if(res_labs$y != y_label,
+          message = paste0(
+            "The label of the y-axis should be '", y_label, "', ",
+            "not '{res_labs$y}' as in your case!"))
+  fail_if(is.null(res_labs$caption),
+          message = paste0(
+            "Caption not set. Try using the `ggplot2::labs()` function."))
+  fail_if(is.null(res_labs$title),
+          message = paste0(
+            "Title not set. Try using the `ggplot2::labs()` function."))
+  fail_if(res_labs$title != title_label,
+          message = paste0(
+            "The caption should be '", title_label, "', ",
+            "not '{res_labs$title}' as in your case!"))
+  fail_if(res_labs$caption != cap_label,
+          message = paste0(
+            "The caption should be '", cap_label, "', ",
+            "not '{res_labs$caption}' as in your case!"))
+  fail_if(res_labs$title != title_label,
+          message = paste0(
+            "The caption should be '", title_label, "', ",
+            "not '{res_labs$title}' as in your case!"))
+  pass()
+}
+)
+```
+
+Again, assume the plot from the previous exercise is saved as `plot_1`.
+Now adjust the x- and y-axis labels: they should be divided by 1000, and a 
+suffix 'k' should be added.
+
+**Note:** *No automatic feedback available for this exercise, you need to* 
+*compare your solution to the provided solution yourself by clicking through*
+*all hints.*
+
+```{r ex-vis4-setup}
+plot_1 <- ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=carrier)
+  ) +
+  geom_point(alpha=0.5) +
+  labs(
+    title = "Delays in departure and arrival in 2021",
+    x = "Departure delay (in min.)",
+    y = "Arrival delay (in min.)",
+    caption = "Data: anyflights package."
+  )
+```
+
+```{r ex-vis4, exercise=TRUE}
+
+```
+
+```{r ex-vis4-hint-1}
+plot_1 +
+  scale_____(
+    ____) +
+  scale_____(
+    ____)
+```
+
+```{r ex-vis4-hint-2}
+plot_1 +
+  scale_x____(
+    ____) +
+  scale_y____(
+    ____)
+```
+
+```{r ex-vis4-hint-3}
+plot_1 +
+  scale_x_continuous(
+    ____) +
+  scale_y_continuous(
+    ____)
+```
+
+```{r ex-vis4-hint-4}
+plot_1 +
+  scale_x_continuous(
+    labels = ____(____ = ____, ____ = ____)) +
+  scale_y_continuous(
+    ____)
+```
+
+```{r ex-vis4-hint-5}
+plot_1 +
+  scale_x_continuous(
+    labels = scales::number_format(____ = ____, ____ = ____)) +
+  scale_y_continuous(
+    ____)
+```
+
+```{r ex-vis4-hint-6}
+plot_1 +
+  scale_x_continuous(
+    labels = scales::number_format(scale = ____, ____ = ____)) +
+  scale_y_continuous(
+    ____)
+```
+
+```{r ex-vis4-hint-7}
+plot_1 +
+  scale_y_continuous(
+    labels = scales::number_format(scale = ____, suffix = ____)) +
+  scale_x_continuous(
+    ____)
+```
+
+```{r ex-vis4-hint-8}
+plot_1 +
+  scale_y_continuous(
+    labels = scales::number_format(scale = 0.001, suffix = "k")) +
+  scale_x_continuous(
+    ____)
+```
+
+```{r ex-vis4-solution}
+plot_1 +
+  scale_y_continuous(
+    labels = scales::number_format(scale = 0.001, suffix = "k")) +
+  scale_x_continuous(
+    labels = scales::number_format(scale = 0.001, suffix = "k"))
+```
+
+Finally, apply the black-and-white theme to the plot `plot_1`.
+
+**Note:** *No automatic feedback available for this exercise, you need to* 
+*compare your solution to the provided solution yourself by clicking through*
+*all hints.*
+
+```{r ex-vis5-setup}
+plot_1 <- ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=dep_delay, y = arr_delay, color=carrier)
+  ) +
+  geom_point(alpha=0.5) +
+  labs(
+    title = "Delays in departure and arrival in 2021",
+    x = "Departure delay (in min.)",
+    y = "Arrival delay (in min.)",
+    caption = "Data: anyflights package."
+  ) +
+  scale_y_continuous(
+    labels = scales::number_format(scale = 0.001, suffix = "k")) +
+  scale_x_continuous(
+    labels = scales::number_format(scale = 0.001, suffix = "k"))
+```
+
+```{r ex-vis5, exercise=TRUE}
+
+```
+
+```{r ex-vis5-hint-1}
+plot_1 +
+  ____()
+```
+
+```{r ex-vis5-hint-2}
+plot_1 +
+  theme_____()
+```
+
+```{r ex-vis5-solution}
+plot_1 +
+  theme_bw()
+```
+
+## Coding exercise - Part 2
+
+Let us now study how arrival delays are distributed over the year.
+To this end, produce a plot by mapping the variable `month` to the x-axis, and
+the variable `arr_delay` to the y axis. The data should be represented via the
+point-geom. Also apply the black-and-white theme.
+
+```{r ex-vis6, exercise=TRUE}
+
+```
+
+```{r ex-vis6-hint-1}
+ggplot(
+  data = ____, 
+  mapping = aes(____)
+  ) +
+  ____() +
+  ____()
+```
+
+```{r ex-vis6-hint-2}
+ggplot(
+  data = ____, 
+  mapping = aes(____)
+  ) +
+  ____() +
+  theme_bw()
+```
+
+```{r ex-vis6-hint-3}
+ggplot(
+  data = ____, 
+  mapping = aes(x=____, y = ____)
+  ) +
+  ____() +
+  theme_bw()
+```
+
+```{r ex-vis6-hint-4}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=____, y = ____)
+  ) +
+  ____() +
+  theme_bw()
+```
+
+```{r ex-vis6-hint-5}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=____, y = ____)
+  ) +
+  geom_() +
+  theme_bw()
+```
+
+```{r ex-vis6-hint-6}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=____, y = ____)
+  ) +
+  geom_point() +
+  theme_bw()
+```
+
+```{r ex-vis6-hint-7}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = ____)
+  ) +
+  geom_point() +
+  theme_bw()
+```
+
+```{r ex-vis6-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_point() +
+  theme_bw()
+```
+
+```{r ex-vis6-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, "point", exact = FALSE), 
+          message = paste0(
+            "You were asked to use the geom 'point'."
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=month, y = arr_delay), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `month` to the x-axis, and the ",
+            "variable `arr_delay` to the y-axis!" ,
+            "Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  pass()
+})
+```
+
+One way to represent distributions with more information is to use a 
+[boxplot](https://www.data-to-viz.com/caveat/boxplot.html). 
+You can do this by replacing the geom 'point' with the geom 'boxplot'.
+
+```{r ex-vis7, exercise=TRUE}
+
+```
+
+```{r ex-vis7-hint-1}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  ____() +
+  theme_bw()
+```
+
+```{r ex-vis7-hint-2}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_____() +
+  theme_bw()
+```
+
+```{r ex-vis7-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_boxplot() +
+  theme_bw()
+```
+
+```{r ex-vis7-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, "boxplot", exact = FALSE), 
+          message = paste0(
+            "You were asked to use the geom 'boxplot'."
+            ), encourage = TRUE
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=month, y = arr_delay), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `month` to the x-axis, and the ",
+            "variable `arr_delay` to the y-axis!" ,
+            "Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  pass()
+})
+```
+
+One problem with boxplots is that they may conceal the underlying distribution 
+of the data. A neat alternative is the 
+[violin plot](https://www.data-to-viz.com/graph/violin.html). 
+Replace the boxplot with the geom needed for a violin plot.
+
+
+```{r ex-vis8, exercise=TRUE}
+
+```
+
+```{r ex-vis8-hint-1}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_____() +
+  theme_bw()
+```
+
+```{r ex-vis8-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_violin() +
+  theme_bw()
+```
+
+```{r ex-vis8-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, "violin", exact = FALSE), 
+          message = paste0(
+            "You were asked to use the geom 'violin'."
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=month, y = arr_delay), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `month` to the x-axis, and the ",
+            "variable `arr_delay` to the y-axis!" ,
+            "Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  pass()
+})
+```
+
+Redo the previous plot but set the optional argument for the violin geom
+`scale` to `'count'`. Can you guess what it does?
+
+```{r ex-vis9, exercise=TRUE}
+
+```
+
+```{r ex-vis9-hint-1}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_violin(____) +
+  theme_bw()
+```
+
+```{r ex-vis9-hint-2}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_violin(scale = ____) +
+  theme_bw()
+```
+
+```{r ex-vis9-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x=month, y = arr_delay)
+  ) +
+  geom_violin(scale = "count") +
+  theme_bw()
+```
+
+```{r ex-vis9-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=month, y = arr_delay), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `month` to the x-axis, and the ",
+            "variable `arr_delay` to the y-axis!" ,
+            "Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!ggcheck::uses_geoms(.result, "violin", exact = FALSE), 
+          message = paste0(
+            "You were asked to use the geom 'violin'."
+            )
+          )
+  fail_if(!uses_geom_params(.result, "violin", list(scale = "count")), 
+          message = paste0(
+            "You forgot the set the optional argument `scale` for the violin ",
+            "geom to `'count`. Google can help you to find out what to do!"
+            )
+          )
+  pass(message = paste0("Great job! As you can see the specification ",
+                        "`scale = 'count'` is useful to highlight differences ",
+                        "in the sizes of the different groups that otherwise ",
+                        "might remain unnoticed!"))
+})
+```
+
+Finally, lets look at the distribution of delays. We might do this using a
+histogram. Create a histogram of the arrival delays.
+
+**Hint:** *you now need to specify a single axis, since you are representing *
+*only the distribution of a single variable.*
+
+```{r ex-vis10, exercise=TRUE}
+
+```
+
+```{r ex-vis10-hint-1}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(____)
+  ) +
+  ____() +
+  theme_bw()
+```
+
+```{r ex-vis10-hint-2}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x = ____)
+  ) +
+  ____() +
+  theme_bw()
+```
+
+```{r ex-vis10-hint-3}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x = ____)
+  ) +
+  geom_histogram() +
+  theme_bw()
+```
+
+```{r ex-vis10-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x = arr_delay)
+  ) +
+  geom_histogram() +
+  theme_bw()
+```
+
+```{r ex-vis10-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=arr_delay), 
+                         exact = TRUE), 
+          message = paste0(
+            "There is a problem with your mapping. You only need one variable " ,
+            "this time. Think about which axis it would make sense to plot it "
+            "onto. As usual, use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!ggcheck::uses_geoms(.result, "histogram", exact = FALSE), 
+          message = paste0(
+            "You must produce a histogram. What geom could be the right one?"
+            )
+          )
+  pass()
+})
+```
+
+Re-create this histogram from above, but set the width of the histogram bins
+to `10`.
+
+```{r ex-vis11, exercise=TRUE}
+
+```
+
+```{r ex-vis11-hint-1}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x = arr_delay)
+  ) +
+  geom_histogram(____) +
+  theme_bw()
+```
+
+```{r ex-vis11-hint-2}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x = arr_delay)
+  ) +
+  geom_histogram(____ = 10) +
+  theme_bw()
+```
+
+```{r ex-vis11-solution}
+ggplot(
+  data = nycflights21_small, 
+  mapping = aes(x = arr_delay)
+  ) +
+  geom_histogram(binwidth = 10) +
+  theme_bw()
+```
+
+```{r ex-vis11-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, nycflights21_small), 
+          message = paste0(
+            "You should use the data set `nycflights21_small`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x=arr_delay), 
+                         exact = TRUE), 
+          message = paste0(
+            "There is a problem with your mapping. You only need one variable " ,
+            "this time. Think about which axis it would make sense to plot it "
+            "onto. As usual, use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!ggcheck::uses_geoms(.result, "histogram", exact = FALSE), 
+          message = paste0(
+            "You must produce a histogram. What geom could be the right one?"
+            )
+          )
+  fail_if(!uses_geom_params(.result, "histogram", list(binwidth = 10)), 
+          message = paste0(
+            "You forgot the set the binwidth of the histogram. It might be ",
+            "a good idea to google how to set the binwidth (not the nb of bins!)!"
+            )
+          )
+  pass()
+})
+```
