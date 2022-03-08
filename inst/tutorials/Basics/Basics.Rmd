@@ -7,8 +7,11 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(learnr)
-gradethis::gradethis_setup()
+library(gradethis)
 knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
 ```
 
 ## General remarks

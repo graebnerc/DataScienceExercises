@@ -9,7 +9,7 @@ runtime: shiny_prerendered
 library(learnr)
 library(tibble)
 library(stringr)
-gradethis::gradethis_setup()
+library(gradethis)
 knitr::opts_chunk$set(echo = FALSE)
 gradethis_setup(
   pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
