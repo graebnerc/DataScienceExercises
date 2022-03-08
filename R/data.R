@@ -28,3 +28,18 @@
 #' }
 #' @source \url{https://github.com/jennybc/gapminder}
 "aggGDPlifexp"
+
+#' A reduced data set on flights from NYC in 2021
+#'
+#' A random sample of 50k flights (out of 336776) from NYC in 2021.
+#'
+#' @format A data frame with 53940 rows and 10 variables:
+#' \describe{
+#'   \item{dep_delay, arr_delay}{Departure and arrival delays, in
+#'     minutes. Negative times represent early departures/arrivals.}
+#'   \item{month}{Month of departure.}
+#'   \item{carrier}{Two letter carrier abbreviation.}
+#'   \item{distance}{Distance between airports, in miles.}
+#' }
+#' @source \url{https://github.com/simonpcouch/anyflights}
+"nycflights21_small"
