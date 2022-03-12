@@ -1,7 +1,7 @@
 Package: DataScienceExercises
 Type: Package
 Title: Exercises for for course Introduction to Data Science at the EUF
-Version: 0.0.0.9004
+Version: 0.0.0.9005
 Authors@R: 
     person(
       given = "Claudius", 
@@ -17,6 +17,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     dplyr (>= 1.0.8),
+    ggcheck (>= 0.0.3),
     gradethis (>= 0.2.5.9000),
     htmltools (>= 0.5.2),
     learnr (>= 0.10.1.9019),
