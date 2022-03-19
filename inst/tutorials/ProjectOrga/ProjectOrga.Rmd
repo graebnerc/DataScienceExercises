@@ -227,6 +227,58 @@ fail_if(!stringr::str_detect(.user_code, "here\\("),
 
 ## Data import - content quiz
 
+```{r quiz2}
+quiz(
+  question(
+    "Which function from which package should you use to import `csv`-files?",
+    answer("`data.table::fread()`", correct = TRUE),
+    answer("`data.table::fwrite()`"),
+    answer("`dplyr::fread()`"),
+    answer("`readr::read_csv()`"),
+    answer("`tidyverse::fread()`"),
+    answer("`read.csv()`")
+  ),
+  question(
+    "Which function should you use to save `csv`-files?",
+    answer("`data.table::fread()`"),
+    answer("`data.table::fwrite()`", correct = TRUE),
+    answer("`saveRDS()`"),
+    answer("`save()`"),
+    answer("`tidyverse::fwrite()`"),
+    answer("`data.table::write_csv()`")
+  ),
+  question(
+    "What is the difference between `.Rds`-files and `.Rdata`-files?",
+    answer(paste("`.Rds`-files contain single R objects,",
+                 "`.Rdata`-files may contain several"), 
+           correct = TRUE),
+    answer(paste("`.Rdata`-files contain single R objects,",
+                 "`.Rds`-files may contain several")),
+    answer(paste("`.Rdata`-files can be loaded without additional packages,",
+                 "`.Rds`-files require the package `tidyerse`.")),
+    answer(paste("`.Rdata`-files are faster to read and write, but the",
+                 "compression level of `.Rds`-files is much better."))
+  ),
+  question(paste0(
+    "To read `.Rds`-files you use `readRDS()`, to read `Rda`-files you use `load()`.",
+    "In what sense do these functions differ in terms of their behavior?"),
+    answer("`readRDS()` returns an object, `load()` does not return anything.", 
+           correct = TRUE),
+    answer("`load` returns an object, `readRDS()` does not return anything."),
+    answer("Both behave the same way."),
+    answer(paste("`load` returns object of type `data.frame`,",
+                 "the objects of `readRDS()` retain their original type."))
+  ),
+  question(paste0(
+    "What is the default type of the objects returned by `data.table::fread()`?"),
+    answer("`data.table`", correct = TRUE),
+    answer("`data.frame`"),
+    answer("`tibble`"),
+    answer("`table`"),
+    answer("Depends on the input file.")
+  )
+  )
+```
 
 
 ## Data import - coding exercises
