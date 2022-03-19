@@ -1,0 +1,736 @@
+---
+title: "Project organization and data import"
+author: "Introduction to data science: session 6"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(data.table)
+library(tibble)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, 
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## Project organization - content quiz
+
+```{r quiz}
+quiz(
+  question(
+    "How can you display your current working directory?",
+    answer("Via the function `getwd()`.", correct = TRUE),
+    answer("Via the function `cwd()`."),
+    answer(paste0(
+      "By clicking on ",
+      "`Session/Set Working Directory/Print Working Directory` in R-Studio.")),
+    answer("By searching for the `.Rproj` file in your file explorer.")
+  ),
+  question(
+    "Which of the following statements about working directories are correct?",
+    answer("The working directory cannot be changed once fixed within an R-project"),
+    answer(paste0("If you use relative paths, they usually start ", 
+                  "from your current working directory"), 
+           correct=TRUE),
+    answer("The default working directory for R is the user directory", 
+           correct = TRUE),
+    answer(paste0("If you open an R-project, the working directory is set to ", 
+                  "the location of the `.Rproj`-file."))
+  ),
+  question("What is the difference between absolute and relative paths?",
+    answer(paste0("Absolute paths start at the root, ", 
+                  "relative paths at the working directory"), 
+           correct=TRUE),
+    answer(paste0("Absolute paths are unambiguous across projects, relative ",
+                  "paths not necessarily")),
+    answer(paste0("Absolute paths contain a file name, relative paths ",
+                  "only point to the directory in which files might be stored")),
+    answer(paste0("Relative paths are always relative to the `.Rproj`-file ",
+                  "of the current project, absolute paths always start at ",
+                  "the working directory."))
+    ),
+  question(
+    "Should you generally use absolute or relative paths?",
+    answer(paste0("You should avoid absolute paths since they are " ,
+                  "usually computer-specific"), correct=TRUE),
+    answer(paste0(
+      "For the sake of transparency, absolute paths are preferable ",
+      "since they contain the whole paths, starting from the computer root.")),
+    answer(paste0("Relative paths are always a bad idea because ", 
+                  "they are dependent on your current working directory.")),
+    answer(paste0("It does not really matter, both have their pros and cons."))
+    ),
+  question(
+    paste0("When creating a new project directory, which of the ",
+           "following sub-directories should you create per default?"),
+    answer("`R`, which contains all R scripts", correct=TRUE),
+    answer("`output`, in which you save all output produced by your scripts", 
+           correct=TRUE),
+    answer("`text`, in which you save all written text", correct=TRUE),
+    answer("`misc`, in which you store everything that doesn't fit elsewhere", 
+           correct=TRUE),
+    answer("`bin`, which serves as the garbage bin for this project"),
+    answer("`plots`, in which you save your visualizations"),
+    answer("`input`, in which you save your raw data that serves as input"),
+    answer(paste0(
+      "`public`, in which you store files meant for all public users ", 
+      "(such as `LICENSE.md` or `README.md`)."))
+  ),
+  question(
+    "What is the package `here` used for?",
+    answer(paste0(
+      "It takes relative paths as an argument, and produces ",
+      "computer-specific absolute paths, based on information about the ",
+      "relative location of the current file in your R project"), 
+      correct=TRUE),
+    answer(paste0(
+      "It automatically sets the working directory of your ",
+      "project to the place of the nearest `.Rproj` file, ",
+      "allowing you to run code on different computers")),
+    answer(paste0(
+      "After setting your position via `here::i_am()` you can ",
+      "translate arbitrary file paths into paths to your current ",
+      "working directory.")),
+    answer(paste0(
+      "It provides a number of functions that allow you to change the ",
+      "working directory, to create new R-projects, and to facilitate code ",
+      "sharing."))
+  )
+)
+```
+
+## Project organization - coding exercises
+
+For the following exercises, assume that your project has the following 
+directory structure and you are working from within the script `myscript.R`:
+
+```
+Exercise6
+│   Exercise6.Rproj    
+│
+└───data
+│   │
+│   └───tidy
+│       │   mydata.csv
+│   └───raw
+└───R
+    │   myscript.R
+```
+
+**What should the first two lines in the file `myscript.R` look like if you will**
+**use the package `here` in this script?**
+
+```{r ex-proj1, exercise=TRUE, message=TRUE, warning=FALSE, echo=FALSE, error=TRUE}
+
+```
+
+```{r ex-proj1-hint-1}
+____
+library(____)
+```
+
+```{r ex-proj1-hint-2}
+____
+library(here)
+```
+
+```{r ex-proj1-hint-3}
+here::____
+library(here)
+```
+
+```{r ex-proj1-hint-4}
+here::i_am(____)
+library(here)
+```
+
+```{r ex-proj1-hint-5}
+here::i_am("R/____")
+library(here)
+```
+
+```{r ex-proj1-solution}
+here::i_am("R/myscript.R")
+library(here)
+```
+
+```{r ex-proj1-check}
+grade_this({
+    fail_if(!stringr::str_detect(.user_code, "'R/myscript.R'"), 
+          message = paste0(
+            "Remember to tell `R` about the relative position of `myscript.R`. ",
+            "Use the `i_am()` function form the package `here`!"
+            )
+          )
+    fail_if_code_feedback(
+          message = paste0(
+            "Remember to tell `R` about the relative position of `myscript.R`" ,
+            "in the beginning. Use the `i_am()` function form the package ",
+            "`here`! Only after this you should attach the `here` package as ",
+            "such."
+            )
+          )
+  pass()
+})
+```
+
+Create an absolute path using the `here` package to the file `mydata.csv`.
+Assume that `here` is already attached, but make
+sure you use the `::`-notation to be explicit.
+
+```{r ex-proj2, exercise=TRUE, message=TRUE, warning=FALSE, echo=FALSE, error=TRUE}
+
+```
+
+```{r ex-proj2-solution}
+here::here("data/tidy/mydata.csv")
+```
+
+```{r ex-proj2-hint-1}
+here::here(____)
+```
+
+```{r ex-proj2-hint-2}
+here::here("____")
+```
+
+```{r ex-proj2-hint-3}
+here::here("data/____/____")
+```
+
+```{r ex-proj2-hint-4}
+here::here("data/____/mydata.csv")
+```
+
+```{r ex-proj2-check}
+grade_this({
+fail_if(!stringr::str_detect(.user_code, "here\\("), 
+          message = paste0(
+            "Your code is missing the call of the function `here()` with a ",
+            "character vector representing the relative path to `mydata.csv`!"
+            )
+          )
+  
+      fail_if(!stringr::str_detect(.user_code, "data/tidy/mydata.csv"), 
+          message = paste0(
+            "Your code does not contain the correct relative path to ",
+            "`mydata.csv`, which is located in the subdirectory `data/table/`."
+            )
+          )
+      pass_if(identical(.result, here::here('data/tidy/mydata.csv')))
+  fail()
+})
+```
+
+## Data import - content quiz
+
+
+
+## Data import - coding exercises
+
+For the following exercises, assume that your project has the following 
+directory structure with all data sets being located directly within the
+folder `data`, and you are working from within the script `myscript.R`:
+
+```
+Exercise6
+│   Exercise6.Rproj    
+│
+└───data
+│   │   growth_data_1.csv
+|   |   product_complexity.csv
+|   |   unemp_pop.csv
+└───R
+    │   myscript.R
+```
+
+**Attention:** Due to the way these exercises were created you cannot use
+the function `here()`, as you would usually do. Thus, use relative paths from
+the project main directory, i.e. the paths you would normally pass to the 
+function `here()`.
+
+https://rstudio.github.io/learnr/articles/exercises.html
+
+Mit Datensätzen, die du in dem Slides Projekt erstellt hast
+
+**Import the file `growth_data_1.csv`, assign to the resulting object the, **
+**name `growth_data`, transform it into a `tibble`, and call the object by** 
+**its name. The file looks like this:**
+
+```
+country;Growth;year
+Germany;-4.56961671737398;2020
+Germany;1.05550824713283;2019
+Germany;1.08602451412267;2018
+Germany;2.68023111405891;2017
+Germany;2.22999986782015;2016
+Germany;1.49193152760772;2015
+```
+
+**Make sure you set the decimal sign and the column separator explicitly!**
+
+```{r ex-imp1, exercise=TRUE}
+
+```
+
+```{r ex-imp1-hint-1}
+growth_data <- ____(
+  ____ = ____, 
+  ____ = ____, 
+  ____ = ____)
+growth_data <- ____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-2}
+growth_data <- data.table::____(
+  ____ = ____, 
+  ____ = ____, 
+  ____ = ____)
+growth_data <- ____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-3}
+growth_data <- data.table::fread(
+  ____ = ____, 
+  ____ = ____, 
+  ____ = ____)
+growth_data <- ____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-4}
+growth_data <- data.table::fread(
+  ____ = "data/growth_data_1.csv", 
+  ____ = ____, 
+  ____ = ____)
+growth_data <- ____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-5}
+growth_data <- data.table::fread(
+  ____ = "data/growth_data_1.csv", 
+  sep = ____, 
+  ____ = ____)
+growth_data <- ____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-6}
+growth_data <- data.table::fread(
+  ____ = "data/growth_data_1.csv", 
+  sep = ____, 
+  dec = ____)
+growth_data <- ____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-7}
+growth_data <- data.table::fread(
+  ____ = "data/growth_data_1.csv", 
+  sep = ____, 
+  dec = ____)
+growth_data <- tibble::____(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-8}
+growth_data <- data.table::fread(
+  ____ = "data/growth_data_1.csv", 
+  sep = ____, 
+  dec = ____)
+growth_data <- tibble::as_tibble(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-9}
+growth_data <- data.table::fread(
+  file = "data/growth_data_1.csv", 
+  sep = ____, 
+  dec = ____)
+growth_data <- tibble::as_tibble(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-10}
+growth_data <- data.table::fread(
+  file = "data/growth_data_1.csv", 
+  sep = ____, 
+  dec = ____)
+growth_data <- tibble::as_tibble(growth_data)
+growth_data
+```
+
+```{r ex-imp1-hint-11}
+growth_data <- data.table::fread(
+  file = "data/growth_data_1.csv", 
+  sep = ";", 
+  dec = ____)
+growth_data <- tibble::as_tibble(growth_data)
+growth_data
+```
+
+```{r ex-imp1-solution}
+growth_data <- data.table::fread(
+  file = "data/growth_data_1.csv", 
+  sep = ";", 
+  dec = ".")
+growth_data <- tibble::as_tibble(growth_data)
+growth_data
+```
+
+```{r ex-imp1-check}
+growth_data <- tibble::as_tibble(data.table::fread(
+  file = "data/growth_data_1.csv", 
+  sep = ";", 
+  dec = "."))
+
+grade_this({
+  fail_if(stringr::str_detect(.user_code, "here\\("), 
+            message = paste0(
+              "Your code should not use the function `here::here()`, although ",
+              "you should usually use this function. But for the sake of this ",
+              "exercise simply use the relative paths you would usually have ",
+              "passed to `here::here()`."
+              )
+          )
+  fail_if(!tibble::is_tibble(.result), 
+            message = paste0(
+              "Your solution is not a tibble. Did you forget to return it? Or ",
+              "did you forget to transform the imported data into a `tibble`? ",
+              "The package `tibble` contains a function with which you can ",
+              "transform data frames into a `tibble`!"
+              )
+          )
+  print(.user_code)
+  fail_if(!stringr::str_detect(.user_code, "fread"), 
+            message = paste0(
+              "You need to use the function `fread()` from the package ",
+              "`data.table` to import the data!"
+              )
+          )
+  fail_if(!stringr::str_detect(.user_code, "sep"), 
+            message = paste0(
+              "You forgot to set the column separator explicitly. Check out ",
+              "the possible arguments to `data.table::fread()`!"
+              )
+          )
+  fail_if(!stringr::str_detect(.user_code, "dec"), 
+            message = paste0(
+              "You forgot to set the decimal sign explicitly. Check out ",
+              "the possible arguments to `data.table::fread()`!"
+              )
+          )
+  pass_if(identical(.result, growth_data))
+  fail()
+})
+```
+
+
+**Import the file `product_complexity.csv`. Assign to the resulting object the **
+**name `product_complexity`, transform it into a `tibble`, and call the object by** 
+**its name. The file looks like this:**
+
+```
+commoditycode.product_complexity.exp_share
+0101.0,0642426217529412.4,64
+0102.-0,492542902941177.3,7
+0103.0,510823855941177.4,082
+0104.-1,12472420411765.0,916
+0105.-0,173124057611765.1,331
+0106.-1,37125134705882.0,766
+0201.-0,103990797158824.25,346
+0202.-0,989652876470588.5,429
+0203.0,858757858235294.23,61
+0204.-0,891279994705882.5,466
+```
+
+**Do not forget to set the decimal sign and the column separator explicitly!**
+
+```{r ex-imp2, exercise=TRUE}
+
+```
+
+```{r ex-imp2-solution}
+product_complexity <- data.table::fread(
+  file = "data/product_complexity.csv",
+  sep = ".", dec = ",",
+  colClasses = c("character", rep("double", 2))
+  )
+product_complexity <- tibble::as_tibble(product_complexity)
+product_complexity
+```
+
+```{r ex-imp2-check}
+product_complexity <- tibble::as_tibble(data.table::fread(
+  file = "data/product_complexity.csv",
+  sep = ".", dec = ",",
+  colClasses = c("character", rep("double", 2))
+  ))
+
+grade_this({
+  fail_if(stringr::str_detect(.user_code, "here\\("), 
+            message = paste0(
+              "Your code should not use the function `here::here()`, although ",
+              "you should usually use this function. But for the sake of this ",
+              "exercise simply use the relative paths you would usually have ",
+              "passed to `here::here()`."
+              )
+          )
+  fail_if(!tibble::is_tibble(.result), 
+            message = paste0(
+              "Your solution is not a tibble. Did you forget to return it? Or ",
+              "did you forget to transform the imported data into a `tibble`? ",
+              "The package `tibble` contains a function with which you can ",
+              "transform data frames into a `tibble`!"
+              )
+          )
+  fail_if(!stringr::str_detect(.user_code, "fread"), 
+            message = paste0(
+              "You need to use the function `fread()` from the package ",
+              "`data.table` to import the data!"
+              )
+          )
+  fail_if(!stringr::str_detect(.user_code, "sep"), 
+            message = paste0(
+              "You forgot to set the column separator explicitly. Check out ",
+              "the possible arguments to `data.table::fread()`!"
+              )
+          )
+  fail_if(!stringr::str_detect(.user_code, "dec"), 
+            message = paste0(
+              "You forgot to set the decimal sign explicitly. Check out ",
+              "the possible arguments to `data.table::fread()`!"
+              )
+          )
+  fail_if(!is.character(.result[["commoditycode"]]), 
+            message = paste0(
+              "The column `commoditycode` should be of type `character`, ",
+              "otherwise the columns are not read correctly. In your solution ",
+              "its of type {typeof(.result[['commoditycode']])}. You should ",
+              "set the column types via the correct argument in `fread()`!"
+              )
+          )
+  fail_if(!is.double(.result[["product_complexity"]]), 
+            message = paste0(
+              "The column `product_complexity` should be of type `double`, ",
+              "otherwise the columns are not read correctly. In your solution ",
+              "its of type {typeof(.result[['product_complexity']])}. You should ",
+              "set the column types via the correct argument in `fread()`!"
+              )
+          )
+  fail_if(!is.double(.result[["exp_share"]]), 
+            message = paste0(
+              "The column `exp_share` should be of type `double`, ",
+              "otherwise the columns are not read correctly. In your solution ",
+              "its of type {typeof(.result[['exp_share']])}. You should ",
+              "set the column types via the correct argument in `fread()`!"
+              )
+          )
+  pass_if(identical(.result, product_complexity))
+  fail()
+})
+```
+
+**Import the file `unemp_pop.csv`, but only the columns `country`, `year`, **
+**and `labor_force`, and only the first two rows. Also, make sure that the **
+**data set is saved as a `tibble`, and that the variable `labor_force` has **
+**the type `double`, and the variable `year` has the type `integer`.**
+
+```
+country,year,population,labor_force
+Germany,2015,81686611,42654597
+Germany,2016,82348669,43551192
+Germany,2017,82657002,43789062
+Germany,2018,82905782,43884544
+Germany,2019,83092962,44351163
+Germany,2020,83240525,44120268
+```
+
+```{r ex-imp3, exercise=TRUE}
+
+```
+
+```{r ex-imp3-hint-1}
+unemp_pop <- ____(
+  ____ = ____,
+  ____ = ____, 
+  ____ = ____,
+  ____ = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-2}
+unemp_pop <- data.table::fread(
+  ____ = ____,
+  ____ = ____, 
+  ____ = ____,
+  ____ = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-3}
+unemp_pop <- data.table::fread(
+  file = ____,
+  ____ = ____, 
+  ____ = ____,
+  ____ = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-4}
+unemp_pop <- data.table::fread(
+  file = ____,
+  sep = ____, 
+  ____ = ____,
+  ____ = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-5}
+unemp_pop <- data.table::fread(
+  file = ____,
+  sep = ____, 
+  select = ____,
+  ____ = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-6}
+unemp_pop <- data.table::fread(
+  file = ____,
+  sep = ____, 
+  select = ____,
+  nrows = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-7}
+unemp_pop <- data.table::fread(
+  file = "data/unemp_pop.csv",
+  sep = ____, 
+  select = ____,
+  nrows = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-8}
+unemp_pop <- data.table::fread(
+  file = "data/unemp_pop.csv",
+  sep = ",", 
+  select = c(____=____, ____=____, ____=____),
+  nrows = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-9}
+unemp_pop <- data.table::fread(
+  file = "data/unemp_pop.csv",
+  sep = ",", 
+  select = c("country"="character", ____=____, ____=____),
+  nrows = ____)
+unemp_pop <- ____(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-hint-10}
+unemp_pop <- data.table::fread(
+  file = "data/unemp_pop.csv",
+  sep = ",", 
+  select = c("country"="character", ____=____, ____=____),
+  nrows = 2)
+unemp_pop <- tibble::as_tibble(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-solution}
+unemp_pop <- data.table::fread(
+  file = "data/unemp_pop.csv",
+  sep = ",", 
+  select = c("country"="character", "year"="integer", "labor_force"="double"),
+  nrows = 2)
+unemp_pop <- tibble::as_tibble(unemp_pop)
+unemp_pop
+```
+
+```{r ex-imp3-check}
+unemp_pop <- tibble::as_tibble(data.table::fread(
+  file = "data/unemp_pop.csv",
+  sep = ",", 
+  select = c("country"="character", "year"="integer", "labor_force"="double"),
+  nrows = 2)
+  )
+
+grade_this({
+  fail_if(stringr::str_detect(.user_code, "here\\("), 
+            message = paste0(
+              "Your code should not use the function `here::here()`, although ",
+              "you should usually use this function. But for the sake of this ",
+              "exercise simply use the relative paths you would usually have ",
+              "passed to `here::here()`."
+              )
+          )
+  fail_if(!tibble::is_tibble(.result), 
+            message = paste0(
+              "Your solution is not a tibble. Did you forget to return it? Or ",
+              "did you forget to transform the imported data into a `tibble`? ",
+              "The package `tibble` contains a function with which you can ",
+              "transform data frames into a `tibble`!"
+              )
+          )
+  fail_if(!stringr::str_detect(.user_code, "fread"), 
+            message = paste0(
+              "You need to use the function `fread()` from the package ",
+              "`data.table` to import the data!"
+              )
+          )
+  fail_if(!is.double(.result[["labor_force"]]), 
+            message = paste0(
+              "The column `labor_force` should be of type `double`. ",
+              "In your solution, however, ",
+              "its of type {typeof(.result[['labor_force']])}. You should ",
+              "set the column types via the correct argument in `fread()`!"
+              )
+          )
+  fail_if(!is.integer(.result[["year"]]), 
+            message = paste0(
+              "The column `year` should be of type `integer`. ",
+              "In your solution, however, ",
+              "its of type {typeof(.result[['year']])}. You should ",
+              "set the column types via the correct argument in `fread()`!"
+              )
+          )
+  fail_if(!setequal(names(.result), names(unemp_pop)), 
+          message = paste0(
+            "You should only keep the columns `country`, `year`, and ",
+            "`labor_force`, but the tibble you created contains the columns ",
+            "{paste(names(.result), collapse=', ')}. There are different ",
+            "possibilities. Check out the help function for `fread()` or read ",
+            "the tutorial on data import."
+            )
+          )
+  fail_if(nrow(.result)!=2, 
+          message = paste0(
+            "You should only keep the first two rows of the data. ",
+            "Check out the help function for `fread()` or read ",
+            "the tutorial on data import to find out how to do it. Or search ",
+            "the web;)"
+            )
+          )
+  pass_if(identical(.result, unemp_pop))
+  fail()
+})
+```
