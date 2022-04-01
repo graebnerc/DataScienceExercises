@@ -157,7 +157,7 @@ grade_this({
     message = fail(paste0(
       "Think about the family of functions ",
       "used to test for given types we learned about!")))
-  fail()
+  pass()
 }
 )
 ```
@@ -179,10 +179,11 @@ as.double(y)
 ```{r ex-coercedouble-check}
 grade_this({
   pass_if(identical(.result, 1.6))
-    fail_if_code_feedback(
+  fail_if_code_feedback(
     message = fail(paste0(
       "Think about the family of functions ", 
-      "used to coerce types we learned about!")))
+      "used to coerce types we learned about!"))
+    )
   fail()
 }
 )
@@ -262,7 +263,7 @@ grade_this({
             "share of elements for which a logical condition is fulfilled.")
           )
   pass_if(identical(.result, sum(z<2)/length(z)))
-    fail_if_code_feedback(
+  fail_if_code_feedback(
     message = fail(paste0(
       "First vectorize the logical test, then sum over the resulting vector, ", 
       "and then divide by the number of elements in the vector (i.e. its length)!")))
