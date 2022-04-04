@@ -1,0 +1,964 @@
+---
+title: "Exercises 5: Data wrangling I"
+author: "Introduction to data science: session 8"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(scales)
+library(gradethis)
+library(dplyr)
+library(tidyr)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## Content quiz
+
+```{r wrangquiz}
+quiz(
+  question(
+    "What is 'tidy data'?", 
+    answer(paste0(
+      "A description of a way to organize data that allows for ",
+      "easy further processing of this data for the sake of ",
+      "analysis or visualization"), 
+      correct = TRUE),
+    answer("Data that was collected in a convincing way"),
+    answer("Data that is publicly available and that can be directly processed further"),
+    answer("Data that is documented in a way that others can use it"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is the main goal of wrangling data that we discussed so far?", 
+    answer("To transform raw data into tidy data", correct = TRUE),
+    answer("To coerce data into `tibble`s"),
+    answer("To import data into R without chaning it"),
+    answer("To identify the right way to model the data"),
+    answer("To manipulate data in a transparent and reproducible way"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    paste0(
+    "Which of the following demands is part of the definition of tidy data?"
+    ),
+    answer('Every row corresponds to one and only one observation', correct = TRUE),
+    answer('Every column corresponds to one and only one variable', correct = TRUE),
+    answer('Every cell corresponds to one and only one value', correct = TRUE),
+    answer('The data is stored in a `tibble`'),
+    answer('There are no illegal variable names'),
+    answer('Data were collected in a transparent and convincing way'),
+    answer('Data are stored in a subdirectory `data`'),
+    allow_retry = TRUE, random_answer_order = TRUE
+  ), 
+  question(
+    "How is 'long' data different from 'wide' data?", 
+    answer("Long data has relative more rows, but fewer columns", correct = TRUE),
+    answer("Long data has relative more columns, but fewer rows"),
+    answer("The data set are bigger in size"),
+    answer("They are easier to read by humans"),
+    answer("Wide data can be used as input for modeling and visualization functions"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+Consider the following code:
+
+```{r, eval=FALSE, echo=TRUE}
+final_data <- filter(base_data, gender=="male")
+final_data <- select(final_data, all_of(c("height", "weight")))
+final_data <- mutate(final_data, weight_per_cm=weight/height)
+```
+
+```{r wquiz2}
+quiz(
+  question("How could you re-write it using pipes?",
+    answer("`final_data <- base_data %>%
+    filter(gender=='male') %>% 
+    select(all_of(c('height', 'weight'))) %>%
+    mutate(final_data, weight_per_cm=weight/height)`", 
+    correct = TRUE),
+    answer("`final_data <- base_data %>%
+    filter(base_data, gender=='male') %>% 
+    select(base_data, all_of(c('height', 'weight'))) %>%
+    mutate(base_data, final_data, weight_per_cm=weight/height)`"),
+    answer("`final_data <- base_data %>%
+    filter(..., gender=='male') %>% 
+    select(..., all_of(c('height', 'weight'))) %>%
+    mutate(..., final_data, weight_per_cm=weight/height)`"),
+    answer("This is not possible"),
+    answer("`final_data <- base_data ->
+    filter(gender=='male') -> 
+    select(all_of(c('height', 'weight'))) ->
+    mutate(final_data, weight_per_cm=weight/height)`"),
+    allow_retry = TRUE, random_answer_order = TRUE
+)
+)
+```
+
+## Coding exercises - Part 1
+
+In the following exercises, please make sure that you return your final data
+set, otherwise your solution cannot be evaluated. This means the the following
+does not work:
+
+```{r, eval=FALSE, echo=TRUE}
+my_solution <- data.frame("a"=1:2, "b"=3:4)
+```
+
+Instead, write:
+
+```{r, eval=FALSE, echo=TRUE}
+my_solution <- data.frame("a"=1:2, "b"=3:4)
+my_solution
+```
+
+Or:
+
+```{r, eval=FALSE, echo=TRUE}
+data.frame("a"=1:2, "b"=3:4)
+```
+
+### Creating new columns
+
+```{r ex-wrang3-setup}
+set.seed(123)
+frame_1 <- tibble(
+  height=rnorm(5, mean = 10),
+  width=rnorm(5, mean = 10)
+)
+```
+
+Consider the data set `frame_1`:
+
+```{r}
+set.seed(123)
+frame_1 <- tibble(
+  height=rnorm(5, mean = 10),
+  width=rnorm(5, mean = 10)
+)
+frame_1
+```
+
+Create a new column called `area` that contains the product of the two columns
+`height` and `width`!
+
+```{r ex-wrang3, exercise=TRUE}
+
+```
+
+```{r ex-wrang3-hint-1}
+frame_1 %>%
+  dplyr::____(____=____)
+```
+
+```{r ex-wrang3-hint-2}
+frame_1 %>%
+  dplyr::mutate(____=____)
+```
+
+```{r ex-wrang3-hint-3}
+frame_1 %>%
+  dplyr::mutate(area=____)
+```
+
+```{r ex-wrang3-hint-4}
+frame_1 %>%
+  dplyr::mutate(area=____*____)
+```
+
+```{r ex-wrang3-hint-5}
+frame_1 %>%
+  dplyr::mutate(area=height*____)
+```
+
+```{r ex-wrang3-solution}
+frame_1 %>%
+  dplyr::mutate(area=height*width)
+```
+
+```{r ex-wrang3-check}
+frame_1_sol <- frame_1 %>%
+  dplyr::mutate(area=height*width)
+
+grade_this({
+  fail_if(!"area" %in% names(.result), 
+          message = paste0("Your result should contain a column `area`!"))
+  pass_if(identical(.result, frame_1_sol))
+  fail()
+})
+```
+
+
+### Filtering rows
+
+```{r ex-wrang4-setup}
+set.seed(123)
+height_obs <- tibble(
+  height=round(rnorm(5, mean = 175, sd = 15))
+)
+```
+
+Consider the data set `height_obs`:
+
+```{r}
+set.seed(123)
+height_obs <- tibble(
+  height=round(rnorm(5, mean = 175, sd = 15))
+)
+height_obs
+```
+
+Filter the data such that it only contains rows where the height is 
+greater of equal to `176`!
+
+```{r ex-wrang4, exercise=TRUE}
+
+```
+
+```{r ex-wrang4-hint-1}
+height_obs %>%
+  dplyr::____(____)
+```
+
+```{r ex-wrang4-hint-2}
+height_obs %>%
+  dplyr::filter(____)
+# Maybe have a look at the filter help page?
+```
+
+```{r ex-wrang4-hint-3}
+height_obs %>%
+  dplyr::filter(height____)
+```
+
+```{r ex-wrang4-hint-4}
+height_obs %>%
+  dplyr::filter(height>=____)
+```
+
+```{r ex-wrang4-solution}
+height_obs %>%
+  dplyr::filter(height>=176)
+```
+
+```{r ex-wrang4-check}
+height_obs_sol <- height_obs %>%
+  dplyr::filter(height>=176)
+
+grade_this({
+  fail_if(min(.result$height!=min(height_obs_sol$height)), 
+          message = paste0(
+            "You should filter for a height of greater or equal to 176! ", 
+            "The smallest value in your result is {round(min(.result), 2)}, ",
+            "so there must be something wrong with the logical operators you ",
+            "have used!")
+          )
+  pass_if(identical(.result, height_obs_sol))
+  fail()
+})
+```
+
+### Selecting columns
+
+```{r ex-wrang5-setup}
+develop_data <- DataScienceExercises::aggGDPlifexp %>%
+  dplyr::filter(year>=1997, continent=="Africa")
+```
+
+Consider the data set `develop_data` from above. Select the columns 
+`continent`, `year`, and `lifeExp`.
+While not strictly necessary, please make use of the function `dplyr::all_of()`
+in your solution!
+
+```{r ex-wrang5, exercise=TRUE}
+
+```
+
+```{r ex-wrang5-hint-1}
+develop_data %>%
+  dplyr::____(____)
+```
+
+```{r ex-wrang5-hint-2}
+develop_data %>%
+  dplyr::select(____)
+# Maybe have a look at the select help page?
+```
+
+```{r ex-wrang5-hint-3}
+develop_data %>%
+  dplyr::select(dplyr::all_of(____))
+```
+
+```{r ex-wrang5-hint-4}
+develop_data %>%
+  dplyr::select(dplyr::all_of(c(____)))
+```
+
+```{r ex-wrang5-hint-5}
+develop_data %>%
+  dplyr::select(dplyr::all_of(c(____, ____, ____)))
+```
+
+```{r ex-wrang5-hint-6}
+develop_data %>%
+  dplyr::select(dplyr::all_of(c("continent", ____, ____)))
+```
+
+```{r ex-wrang5-solution}
+develop_data %>%
+  dplyr::select(dplyr::all_of(c("continent", "year", "lifeExp")))
+```
+
+```{r ex-wrang5-check}
+develop_data_selected <- develop_data %>%
+  dplyr::select(dplyr::all_of(c("continent", "year", "lifeExp")))
+
+grade_this({
+  fail_if(stringr::str_count(.user_code, "all_of")<1, 
+          message = paste0(
+            "Your solution should include the function `dplyr::all_of()`!", 
+            "While it is not strictly necessary you should learn how to use it.",
+            "It turns out to be very useful in practice since it accepts ",
+            "column names as characters!")
+          )
+  pass_if(identical(.result, develop_data_selected))
+  fail()
+})
+```
+
+### Wide and long data I
+
+Consider the relatively wide data set `develop_data`:
+
+```{r, echo=FALSE}
+develop_data <- DataScienceExercises::aggGDPlifexp %>%
+  dplyr::filter(year>=1997, continent=="Africa")
+develop_data
+```
+
+Make this data set longer such that it gets the following structure:
+
+```{r, echo=FALSE}
+develop_data %>%
+  pivot_longer(
+    cols = all_of(c("year", "lifeExp", "pop", "gdpPercap")), 
+    names_to = "variable_considered", 
+    values_to = "value_observed") %>%
+  head(4)
+```
+
+```{r ex-wrang1-setup}
+develop_data <- DataScienceExercises::aggGDPlifexp %>%
+  dplyr::filter(year>=1997, continent=="Africa")
+```
+
+```{r ex-wrang1, exercise=TRUE}
+
+```
+
+```{r ex-wrang1-hint-1}
+develop_data %>%
+  tidyr::____(
+    ____ = ____, 
+    ____ = ____, 
+    ____ = ____)
+```
+
+```{r ex-wrang1-hint-2}
+develop_data %>%
+  tidyr::pivot_longer(
+    ____ = ____, 
+    ____ = ____, 
+    ____ = ____)
+# Maybe have a look at ?pivot_longer
+```
+
+```{r ex-wrang1-hint-3}
+develop_data %>%
+  tidyr::pivot_longer(
+    cols = ____, 
+    names_to = ____, 
+    values_to = ____)
+```
+
+```{r ex-wrang1-hint-4}
+develop_data %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c(____)), 
+    names_to = ____, 
+    values_to = ____)
+```
+
+```{r ex-wrang1-hint-5}
+develop_data %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("year", "lifeExp", "pop", "gdpPercap")), 
+    names_to = ____, 
+    values_to = ____)
+```
+
+```{r ex-wrang1-hint-6}
+develop_data %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("year", "lifeExp", "pop", "gdpPercap")), 
+    names_to = "variable_considered", 
+    values_to = ____)
+```
+
+```{r ex-wrang1-solution}
+develop_data %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("year", "lifeExp", "pop", "gdpPercap")), 
+    names_to = "variable_considered", 
+    values_to = "value_observed")
+```
+
+```{r ex-wrang1-check}
+develop_data_sol <- develop_data %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("year", "lifeExp", "pop", "gdpPercap")), 
+    names_to = "variable_considered", 
+    values_to = "value_observed")
+
+grade_this({
+  fail_if(!"variable_considered" %in% names(.result), 
+          message = paste0("Keep in mind that your result should include ",
+                           "a column named 'variable_considered'!"))
+  fail_if(!"value_observed" %in% names(.result), 
+          message = paste0("Keep in mind that your result should include ",
+                           "a column named 'value_observed'!"))
+  pass_if(identical(.result, develop_data_sol))
+  fail()
+})
+```
+
+### Wide and long data II
+
+Consider the relatively long data set `asian_data`:
+
+```{r, echo=FALSE}
+asian_data <- DataScienceExercises::gdplifexp2007 %>%
+  dplyr::filter(country %in% c("China", "India", "Indonesia", "Japan")) %>%
+  dplyr::select(-continent) %>%
+  tidyr::pivot_longer(cols = -country, names_to = "var", values_to = "val")
+asian_data
+```
+
+Make this data set wider such that it gets the following structure:
+
+```{r, echo=FALSE}
+asian_data_wide <- asian_data %>%
+  tidyr::pivot_wider(names_from = "country", values_from = "val")
+asian_data_wide
+```
+
+```{r ex-wrang2-setup}
+asian_data <- DataScienceExercises::gdplifexp2007 %>%
+  dplyr::filter(country %in% c("China", "India", "Indonesia", "Japan")) %>%
+  dplyr::select(-continent) %>%
+  tidyr::pivot_longer(cols = -country, names_to = "var", values_to = "val")
+```
+
+```{r ex-wrang2, exercise=TRUE}
+
+```
+
+```{r ex-wrang2-hint-1}
+asian_data %>%
+  tidyr::____(
+    ____ = ____, 
+    ____ = ____)
+```
+
+```{r ex-wrang2-hint-2}
+asian_data %>%
+  tidyr::pivot_wider(
+    ____ = ____, 
+    ____ = ____)
+# Maybe have a look at ?pivot_wider
+```
+
+```{r ex-wrang2-hint-3}
+asian_data %>%
+  tidyr::pivot_wider(
+    names_from = ____, 
+    ____ = ____)
+```
+
+```{r ex-wrang2-hint-4}
+asian_data %>%
+  tidyr::pivot_wider(
+    names_from = ____, 
+    values_from = ____)
+```
+
+```{r ex-wrang2-hint-5}
+asian_data %>%
+  tidyr::pivot_wider(
+    names_from = "country", 
+    values_from = ____)
+```
+
+```{r ex-wrang2-solution}
+asian_data_wide <- asian_data %>%
+  tidyr::pivot_wider(
+    names_from = "country", 
+    values_from = "val")
+asian_data_wide
+```
+
+```{r ex-wrang2-check}
+asian_data_wide <- asian_data %>%
+  tidyr::pivot_wider(names_from = "country", values_from = "val")
+
+grade_this({
+  fail_if(!"China" %in% names(.result), 
+          message = paste0("Make sure you choose the right column as source ",
+                           "for the new column names!"))
+  pass_if(identical(.result, asian_data_wide))
+  fail()
+})
+```
+
+## Coding exercises - Part 2
+
+### Joining data sets I
+
+```{r ex-wrang6-setup}
+unemp_data <- DataScienceExercises::unemp_pop %>%
+  dplyr::select("country", "year", "labor_force") %>%
+  dplyr::filter(year>2016) %>%
+  dplyr::rename(Country=country, Year=year)
+
+pop_data <- DataScienceExercises::unemp_pop %>%
+  dplyr::select("country", "year", "population") %>%
+  dplyr::filter(year<2019)
+```
+
+```{r}
+unemp_data <- DataScienceExercises::unemp_pop %>%
+  dplyr::select("country", "year", "labor_force") %>%
+  dplyr::filter(year>2016) %>%
+  dplyr::rename(Country=country, Year=year)
+
+pop_data <- DataScienceExercises::unemp_pop %>%
+  dplyr::select("country", "year", "population") %>%
+  dplyr::filter(year<2019)
+```
+
+Consider the following two data sets:
+
+```{r, echo=TRUE}
+unemp_data
+```
+
+and 
+
+```{r, echo=TRUE}
+pop_data
+```
+
+Join these data sets into one single data set containing 
+observations for the population and labor force in Germany for
+each year such that this data set only contains those years for which data
+on both population and labor force is available (i.e. no missing value occur).
+
+```{r ex-wrang6, exercise=TRUE}
+
+```
+
+```{r ex-wrang6-hint-1}
+dplyr::____(
+  ____ = ____, ____ = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang6-hint-2}
+dplyr::____join(
+  ____ = ____, ____ = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang6-hint-3}
+dplyr::inner_join(
+  ____ = ____, ____ = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang6-hint-4}
+dplyr::inner_join(
+  x = ____, y = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang6-hint-5}
+dplyr::inner_join(
+  x = unemp_data, y = pop_data, 
+  ____=____
+  )
+```
+
+```{r ex-wrang6-hint-6}
+dplyr::inner_join(
+  x = unemp_data, y = pop_data, 
+  by=____
+  )
+```
+
+```{r ex-wrang6-hint-7}
+dplyr::inner_join(
+  x = unemp_data, y = pop_data, 
+  by=c(____=____, ____=____)
+  )
+```
+
+```{r ex-wrang6-hint-8}
+dplyr::inner_join(
+  x = unemp_data, y = pop_data, 
+  by=c("Country"="country", ____=____)
+  )
+```
+
+```{r ex-wrang6-solution}
+dplyr::inner_join(
+  x = unemp_data, y = pop_data, 
+  by=c("Country"="country", "Year"="year")
+  )
+# Note: if you switch unemp_data and pop_data, you also need to swap the 
+# names in the by argument
+```
+
+```{r ex-wrang6-check}
+unemp_pop_data_1 <- dplyr::inner_join(
+  x = unemp_data, y = pop_data, 
+  by=c("Country"="country", "Year"="year")
+  )
+
+unemp_pop_data_2 <- dplyr::inner_join(
+  x = pop_data, y = unemp_data, 
+  by=c("country"="Country", "year"="Year")
+  )
+
+grade_this({
+  fail_if(!stringr::str_detect(.user_code, "_join"), 
+          message = paste0("There is a family of functions provided in the ",
+                           "dplyr package that allow you to join data sets. ",
+                           "Use one of them!"))
+  fail_if(!stringr::str_detect(.user_code, "inner_join"), 
+          message = paste0("You did not choose the right member of the ",
+                           "dplyr::join_*-family. Maybe have a look at the ",
+                           "documentation?!"))
+  pass_if(identical(.result, unemp_pop_data_1) | identical(.result, unemp_pop_data_2))
+  fail()
+})
+```
+
+
+### Joining data sets II
+
+Use the same data sets as in the previous exercise but now join the data sets
+such that all years for which at least one observation in one of the two 
+variables is available are contained in the new data set.
+
+```{r ex-wrang7-setup}
+unemp_data <- DataScienceExercises::unemp_pop %>%
+  dplyr::select("country", "year", "labor_force") %>%
+  dplyr::filter(year>2016) %>%
+  dplyr::rename(Country=country, Year=year)
+
+pop_data <- DataScienceExercises::unemp_pop %>%
+  dplyr::select("country", "year", "population") %>%
+  dplyr::filter(year<2019)
+```
+
+```{r ex-wrang7, exercise=TRUE}
+
+```
+
+```{r ex-wrang7-hint-1}
+dplyr::____(
+  ____ = ____, ____ = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang7-hint-2}
+dplyr::____join(
+  ____ = ____, ____ = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang7-hint-3}
+dplyr::full_join(
+  ____ = ____, ____ = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang7-hint-4}
+dplyr::full_join(
+  x = ____, y = ____, 
+  ____=____
+  )
+```
+
+```{r ex-wrang7-hint-5}
+dplyr::full_join(
+  x = unemp_data, y = pop_data, 
+  ____=____
+  )
+```
+
+```{r ex-wrang7-hint-6}
+dplyr::full_join(
+  x = unemp_data, y = pop_data, 
+  by=____
+  )
+```
+
+```{r ex-wrang7-hint-7}
+dplyr::full_join(
+  x = unemp_data, y = pop_data, 
+  by=c(____=____, ____=____)
+  )
+```
+
+```{r ex-wrang7-hint-8}
+dplyr::full_join(
+  x = unemp_data, y = pop_data, 
+  by=c("Country"="country", ____=____)
+  )
+```
+
+```{r ex-wrang7-solution}
+dplyr::full_join(
+  x = unemp_data, y = pop_data, 
+  by=c("Country"="country", "Year"="year")
+  )
+# Note: if you switch unemp_data and pop_data, you also need to swap the 
+# names in the by argument
+```
+
+```{r ex-wrang7-check}
+unemp_pop_data_1 <- dplyr::full_join(
+  x = unemp_data, y = pop_data, 
+  by=c("Country"="country", "Year"="year")
+  )
+
+unemp_pop_data_2 <- dplyr::full_join(
+  x = pop_data, y = unemp_data, 
+  by=c("country"="Country", "year"="Year")
+  )
+
+grade_this({
+  fail_if(!stringr::str_detect(.user_code, "_join"), 
+          message = paste0("There is a family of functions provided in the ",
+                           "dplyr package that allow you to join data sets. ",
+                           "Use one of them!"))
+  fail_if(!stringr::str_detect(.user_code, "full_join"), 
+          message = paste0("You did not choose the right member of the ",
+                           "dplyr::join_*-family. Maybe have a look at the ",
+                           "documentation?!"))
+  pass_if(identical(.result, unemp_pop_data_1) | identical(.result, unemp_pop_data_2))
+  fail()
+})
+```
+
+
+### Summarizing data
+
+Consider the data set `wine2dine` , which contains information about the alcohol
+and sugar content, as well as the perceived quality of 6497 red and white wines:
+
+```{r}
+wine2dine <- DataScienceExercises::wine2dine
+head(wine2dine)
+```
+
+Compute the averages of the three wine 
+properties for white and red wine separately. Your result should be a 
+`tibble` that contains a column `property` indicating the property, and the 
+columns `red` and `white`, which contain the average values for red and 
+white wine, respectively. It should look like this:
+
+```{r}
+tibble("property"=rep(NA_character_, 3), 
+       "red"=rep(NA_real_, 3), 
+       "white"=rep(NA_real_, 3))
+```
+
+
+```{r ex-wrang8-setup}
+wine2dine <- DataScienceExercises::wine2dine
+```
+
+```{r ex-wrang8, exercise=TRUE}
+
+```
+
+```{r ex-wrang8-hint-1}
+wine2dine %>%
+  tidyr::____(____) %>%
+  dplyr::____(____) %>%
+  dplyr::____(____) %>%
+  tidyr::____(____)
+```
+
+```{r ex-wrang8-hint-2}
+wine2dine %>%
+  tidyr::pivot_longer(____) %>%
+  dplyr::____(____) %>%
+  dplyr::____(____) %>%
+  tidyr::____(____)
+```
+
+```{r ex-wrang8-hint-3}
+wine2dine %>%
+  tidyr::pivot_longer(____) %>%
+  dplyr::group_by(____) %>%
+  dplyr::____(____) %>%
+  tidyr::____(____)
+```
+
+```{r ex-wrang8-hint-4}
+wine2dine %>%
+  tidyr::pivot_longer(____) %>%
+  dplyr::group_by(____) %>%
+  dplyr::summarise(____) %>%
+  tidyr::____(____)
+```
+
+```{r ex-wrang8-hint-5}
+wine2dine %>%
+  tidyr::pivot_longer(____) %>%
+  dplyr::group_by(____) %>%
+  dplyr::summarise(____) %>%
+  tidyr::pivot_wider(____)
+```
+
+```{r ex-wrang8-hint-6}
+wine2dine %>%
+  tidyr::pivot_longer(    
+    cols = dplyr::all_of(____), 
+    names_to = ____, 
+    values_to = ____) %>%
+  dplyr::group_by(____) %>%
+  dplyr::summarise(____) %>%
+  tidyr::pivot_wider(____)
+```
+
+```{r ex-wrang8-hint-7}
+wine2dine %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
+    names_to = "property", 
+    values_to = "value") %>%
+  dplyr::group_by(____) %>%
+  dplyr::summarise(____) %>%
+  tidyr::pivot_wider(____)
+```
+
+```{r ex-wrang8-hint-8}
+wine2dine %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
+    names_to = "property", 
+    values_to = "value") %>%
+  dplyr::group_by(kind, property) %>%
+  dplyr::summarise(____) %>%
+  tidyr::pivot_wider(____)
+```
+
+```{r ex-wrang8-hint-9}
+wine2dine %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
+    names_to = "property", 
+    values_to = "value") %>%
+  dplyr::group_by(kind, property) %>%
+  dplyr::summarise(value=mean(value), .groups = "drop") %>%
+  tidyr::pivot_wider(____)
+```
+
+```{r ex-wrang8-hint-10}
+wine2dine %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
+    names_to = "property", 
+    values_to = "value") %>%
+  dplyr::group_by(kind, property) %>%
+  dplyr::summarise(value=mean(value), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = ____, values_from = ____)
+```
+
+```{r ex-wrang8-solution}
+wine2dine %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
+    names_to = "property", 
+    values_to = "value") %>%
+  dplyr::group_by(kind, property) %>%
+  dplyr::summarise(value=mean(value), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = "kind", values_from = "value")
+```
+
+```{r ex-wrang8-check}
+wine2dine_sol <- wine2dine %>%
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
+    names_to = "property", 
+    values_to = "value") %>%
+  dplyr::group_by(kind, property) %>%
+  dplyr::summarise(value=mean(value), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = "kind", values_from = "value")
+
+grade_this({
+  fail_if(!tibble::is_tibble(.result), 
+          message = "Your result should be a `tibble`, not a {typeof(.result)}!")
+  
+  fail_if(!stringr::str_detect(.user_code, "pivot_longer"), 
+          message = paste0("The solution is a bit more complex! It must ",
+                           "definitely make use of the function ",
+                           "`tidyr::pivot_longer()`. Think of how and where ",
+                           "it might help you!"))
+  
+  fail_if(!stringr::str_detect(.user_code, "group_by"), 
+          message = paste0("The solution is a bit more complex! It must ",
+                           "definitely make use of the function ",
+                           "`dplyr::group_by()`. Think of how and where ",
+                           "it might help you!"))
+  
+  fail_if(!(stringr::str_detect(.user_code, "summarise") | 
+              stringr::str_detect(.user_code, "summarize")), 
+          message = paste0("The solution is a bit more complex! It must ",
+                           "definitely make use of the function ",
+                           "`dplyr::summarise()`. Think of how and where ",
+                           "it might help you!"))
+  
+  fail_if(!stringr::str_detect(.user_code, "pivot_wider"), 
+          message = paste0("The solution is a bit more complex! It must ",
+                           "definitely make use of the function ",
+                           "`tidyr::pivot_wider()`. Think of how and where ",
+                           "it might help you!"))
+  
+  fail_if(!setequal(names(.result), names(wine2dine_sol)), 
+          message = paste0(
+            "There is a problem with the names of your `tibble`. They should ",
+            "be `'property'`, `'red'`, and `'white'`, ",
+            "not {paste(names(.result), collapse=', ')}!"
+            )
+          )
+  
+  pass_if(identical(.result, wine2dine_sol))
+  fail()
+})
+```
