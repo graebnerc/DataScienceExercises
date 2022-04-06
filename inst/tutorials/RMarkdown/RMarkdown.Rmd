@@ -1,0 +1,117 @@
+---
+title: "Exercises 6: R Markdown"
+author: "Introduction to data science: session 9"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## General remarks
+
+* There will be no coding exercises in the exercise sheet; you can find a link 
+to coding exercises in the material section of the course homepage
+* The questions and practical tasks all refer to *R Markdown*; for a tutorial 
+in Markdown (that also includes exercises), please use the 
+[CommonMark markdown tutorial](https://commonmark.org/help/tutorial/)
+
+## Content quiz
+
+```{r markdownquiz1}
+quiz(
+  question(
+    "What is the specific feature of R Markdown that makes it so attractive?", 
+    answer(paste0(
+      "It allows writing documents comprising of both R code for statistical ",
+      "analysis and Markdown code for formatting text."), 
+      correct = TRUE),
+    answer("It allows to create graphics interactively."),
+    answer("It facilitates the writing of texts in LaTeX from within an R project."),
+    answer(paste0(
+      "It makes writing R code easier by providing several useful Addins ", 
+      "for R-Studio that speeed up common coding tasks.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question("What is the header of an R-Markdown document used for?",
+    answer("It specifies general document properties and determines how the document gets rendered",
+           correct = TRUE),
+    answer("It sets the defaults values for the R chunks used in the document"),
+    answer("It fixes the meta-data for the redered documents"),
+    answer("It is used to specify the languages that can be used within the documents"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "Assuming I want to hide the R code in the final document, but ", 
+    "still include the output it produces, which chunk option should I use?"),
+    answer("`echo=FALSE`", correct = TRUE),
+    answer("`include=FALSE`"),
+    answer("`echo=TRUE`"),
+    answer("`hide=TRUE`"),
+    answer("`eval=FALSE`"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question("What can you control via the chunk option `include`?",
+    answer("Whether code and output should be printed in the final documents", correct = TRUE),
+    answer("Whether a chunk should be executed during the rendering process"),
+    answer("Whether the output of a chunk should be included in the final documents"),
+    answer("Whether the objects defined in the chunk should remain in the working environment"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "When you render an R-Markdown document, the working directoy used " ,
+    "to evaluate relative paths is..."),
+    answer("The location of the `.Rmd`-file.", correct = TRUE),
+    answer("The location of the `.Rproj`-file"),
+    answer("The root directory of your computer"),
+    answer("The working directory of the current R project"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+Consider the following header:
+
+```
+title: "Test Markdown"
+author: "Claudius"
+output: 
+  html_document:
+    toc: true
+    code_download: true
+    theme: flatly
+```
+
+```{r markdownquiz2}
+quiz(
+  question(
+    "Will the rendered document feature a table of contents?",
+    answer("Only if you produce an html file", correct = TRUE),
+    answer("Yes"),
+    answer("No"),
+    answer("Only if the document is published as a Netlify webpage"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("What is the effect of `code_download: true`?",
+    answer("It adds a download button to the upper right, through which you ", 
+           "can download the underlying `.Rmd`-file", correct = TRUE),
+    answer("The code gets automatically saved in your download folder"),
+    answer("The code will be made available to the publice for download via CRAN"),
+    answer("It allows users to save the webpage"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("What is the effect of `theme: flatly`?",
+    answer(paste0("It changes the overall appearence of the resulting file ",
+                  "according to a bootswatch.com-theme"), correct = TRUE),
+    answer("It chooses a combination of fonts that give a flat appearance"),
+    answer("It flattens your code in the resulting html file"),
+    answer("It automatically indents your R code in a flat way"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+
+
