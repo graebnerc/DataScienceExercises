@@ -479,7 +479,9 @@ l_1[["b"]]
 
 ```{r ex-l2-check}
 grade_this({
-  fail_if(stringr::str_detect(.user_code, '\\["') | stringr::str_detect(.user_code, '\\[2'),
+  fail_if(stringr::str_detect(.user_code, 'l_1\\["') | 
+            stringr::str_detect(.user_code, "l_1\\['") |
+            stringr::str_detect(.user_code, "l_1\\[2"),
           message = paste0(
             "Remember the two ways you can extract an element from the list! ",
             "You chose the wrong one!"
