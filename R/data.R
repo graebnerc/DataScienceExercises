@@ -58,3 +58,19 @@
 #' }
 #' @source \url{https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/}
 "wine2dine"
+
+#' Data on beer consumption
+#'
+#' A data set on beer consumption; the data was obtained for a single
+#'  household
+#'
+#' @format A data frame with 30 rows and 5 variables
+#' \describe{
+#'   \item{q}{litres of beer consumed}
+#'   \item{pb}{Price of beer ($)}
+#'   \item{pl}{price of other liquor ($)}
+#'   \item{pr}{price of remaining goods and services (an index)}
+#'   \item{i}{income ($)}
+#'}
+#' @source  \url{http://www.principlesofeconometrics.com/poe4/poe4stata.htm}
+"beer"
