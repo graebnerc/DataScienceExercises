@@ -71,7 +71,7 @@
 #'   \item{pl}{price of other liquor ($)}
 #'   \item{pr}{price of remaining goods and services (an index)}
 #'   \item{i}{income ($)}
-#'}
+#' }
 #' @source  \url{http://www.principlesofeconometrics.com/poe4/poe4stata.htm}
 "beer"
 
@@ -91,6 +91,6 @@
 #'   \item{impact}{Journal impact factor in 2002}
 #'   \item{citations}{Total cites in 1999}
 #'   \item{papers}{Papers published in 2002}
-#'}
-#' @source  \url{https://www.econ.ucsb.edu/%7Etedb/Journals/pricing.html}
-"beer"
+#' }
+#' @source  \url{https://www.econ.ucsb.edu/~tedb/Journals/pricing.html}
+"econjournals"
