@@ -74,3 +74,23 @@
 #'}
 #' @source  \url{http://www.principlesofeconometrics.com/poe4/poe4stata.htm}
 "beer"
+
+#' Data on economics journals subscription fees
+#'
+#' A data set on how much libraries need to pay for subscription plans of
+#'  journals in the field of economics.
+#'
+#' @format A data frame with 327 rows and 10 variables
+#' \describe{
+#'   \item{title}{Title of the journal}
+#'   \item{publisher}{The name of the publisher}
+#'   \item{publisher_type}{Type of publisher: `profit` or `nonprofit`}
+#'   \item{first_year}{First year in which journal was published in English language.}
+#'   \item{sub_price}{Price to university libraries for print and online access in the United States in 2004. Measured in nominal dollars.}
+#'   \item{pages_py}{Pages published in 2003}
+#'   \item{impact}{Journal impact factor in 2002}
+#'   \item{citations}{Total cites in 1999}
+#'   \item{papers}{Papers published in 2002}
+#'}
+#' @source  \url{https://www.econ.ucsb.edu/%7Etedb/Journals/pricing.html}
+"beer"
