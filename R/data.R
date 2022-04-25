@@ -66,11 +66,11 @@
 #'
 #' @format A data frame with 30 rows and 5 variables
 #' \describe{
-#'   \item{q}{litres of beer consumed}
-#'   \item{pb}{Price of beer ($)}
-#'   \item{pl}{price of other liquor ($)}
-#'   \item{pr}{price of remaining goods and services (an index)}
-#'   \item{i}{income ($)}
+#'   \item{consumption}{litres of beer consumed}
+#'   \item{price}{Price of beer ($)}
+#'   \item{price_liquor}{price of other liquor ($)}
+#'   \item{price_other}{price of other goods and services (an index)}
+#'   \item{income}{income ($)}
 #' }
 #' @source  \url{http://www.principlesofeconometrics.com/poe4/poe4stata.htm}
 "beer"
