@@ -94,3 +94,20 @@
 #' }
 #' @source  \url{https://www.econ.ucsb.edu/~tedb/Journals/pricing.html}
 "econjournals"
+
+#' Artificial data on heights of EUF students in 2021
+#'
+#' A an artificial data set about the height of students from the Europa
+#'  University Flensburg. The composition of the population was set according
+#'  to official information about the student population in 2021, the heights
+#'  were created artificially by drawing from a random distribution, which was
+#'  calibrated for mean and standard deviation parameters of the German
+#'  population.
+#'
+#' @format A data frame with 6402 rows and 2 variables
+#' \describe{
+#'   \item{Gender}{Gender of the person}
+#'   \item{Height}{Height of the person}
+#' }
+#' @source  \url{https://www.uni-flensburg.de/die-universitaet/profil-der-euf/zahlen-und-fakten?sword_list%5B0%5D=studierende&cHash=58017981a73d073af3f3633bf8d96803}
+"EUFstudents"
