@@ -109,5 +109,18 @@
 #'   \item{Gender}{Gender of the person}
 #'   \item{Height}{Height of the person}
 #' }
-#' @source  \url{https://www.uni-flensburg.de/die-universitaet/profil-der-euf/zahlen-und-fakten?sword_list%5B0%5D=studierende&cHash=58017981a73d073af3f3633bf8d96803}
+#' @source \url{https://www.uni-flensburg.de/die-universitaet/profil-der-euf/zahlen-und-fakten?sword_list%5B0%5D=studierende&cHash=58017981a73d073af3f3633bf8d96803}
 "EUFstudents"
+
+#' Study semester of the EUF students in 2021
+#'
+#' A data set on the distribution of study semesters for all students of the
+#'  Europa-University Flensburg in the spring semester 2021.
+#'
+#' @format A data frame with 5875 rows and 1 variable
+#' \describe{
+#'   \item{ID}{An ID for the student}
+#'   \item{Semester}{The study semester of the student}
+#' }
+#' @source \url{https://www.uni-flensburg.de/die-universitaet/profil-der-euf/zahlen-und-fakten?sword_list%5B0%5D=studierende&cHash=58017981a73d073af3f3633bf8d96803}
+"EUFstudentsemesters"
