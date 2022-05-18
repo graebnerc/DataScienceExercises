@@ -1,0 +1,99 @@
+---
+title: "Exercises 8: the philosophy of models"
+author: "Introduction to data science: session 10"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## Content quiz
+
+*Note that there will be no coding exercises in the exercise sheet, it is* *
+*'only' meant to recapitulate the philosophical lecture.*
+
+```{r markdownquiz1}
+quiz(
+  question(paste0(
+    "What were the most fundamental distinction between ",
+    "modeling purposes made in the lecture?"), 
+    answer(paste0(
+      "Prediction and explanation."), 
+      correct = TRUE),
+    answer("Prediction and exploration."),
+    answer("Explaining phenomena vs. generating hypotheses."),
+    answer("Explanation and calibration."),
+    answer("Testing hypotheses vs. testing conjectures."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "What is common to all models?"), 
+    answer("They represent a target.", correct = TRUE),
+    answer("They can predict future states of a sytem."),
+    answer("They are made up of mathematical formulas."),
+    answer("They can test hypotheses."),
+    answer("They need to be analyzed computationally."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "Which of the following steps are part of the hypothetico-deductive method?"),
+    answer("Formulate a hypothesis about a law.", correct = TRUE),
+    answer("Use the deductive-nomological method to derive a prediction.", correct = TRUE),
+    answer("Test a prediction empirically.", correct = TRUE),
+    answer("Accept/falsify the hypothesis.", correct = TRUE),
+    answer("Delineating useful hypotheses."),
+    answer("Selecting the best model for the present purpose."),
+    answer("Test the auxiliary assumptions."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question("What is the role of models within the hypothetico-deductive method?",
+    answer("Models are the means to derive and test predictions.", correct = TRUE),
+    answer("Devices to test the auxiliary assumptions of the hypotheses."),
+    answer("Tools to delineate the hypotheses in the first place."),
+    answer("Models have no place in the HDM."),
+    answer("Tools to turn predictions into explanations."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "What does the concept of 'Fallibilism' refers to?"),
+    answer(paste0("The fact that we can never be 100% certain " ,
+                  "about the validity of currently unrejected hypothesis."), 
+           correct = TRUE),
+    answer(paste0("The conviction that we can never verify, but only falsify ",
+                  "hypotheses.")),
+    answer("The process of falsifying a hypotheses."),
+    answer(paste0("The idea that a single theory is never enough to understand a ",
+                  "social phenomenon.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "What is the task of models in the context of exploratory analysis?"),
+    answer("To generate new hypotheses.", correct = TRUE),
+    answer("To test existing hypotheses."),
+    answer("To derive predictions from explanations."),
+    answer("To derive explanations from predictions."),
+    answer(paste0("To identify the right indicators for the measurement",
+                  "of certain theoretical concepts.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "When do we speak of a spurious relationship between two variables?"),
+    answer(paste0("If they are correlated with each other, ",
+                  "but there is no causal mechanism connecting them."), 
+           correct = TRUE),
+    answer(paste0("When there is a causal relationship, which remains ",
+                  "invisible due to other counter-acting causal relationships.")),
+    answer(paste0("When we are unable to identify a correlation relationship, ",
+                  "which is actually there.")),
+    answer(paste0("When the data suggest a causal relationships where this is ",
+                  "very implausible from a theoretical viewpoint.")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
