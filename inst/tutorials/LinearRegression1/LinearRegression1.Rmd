@@ -1,0 +1,682 @@
+---
+title: "Exercises 9: Simple Linear Regresssion"
+author: "Introduction to data science: session 11"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(ggplot2)
+library(moderndive)
+library(ggcheck)
+
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+
+cars2008 <- dplyr::filter(mpg, year==2008)
+```
+
+## Content quiz I
+
+**Note:** SLR stands for *Simple Linear Regression*.
+
+```{r quiz1}
+quiz(
+  question(
+    "What does 'simple' in 'Simple linear regression' mean?", 
+    answer(paste0("That we are studying the relationship between two variables"), 
+      correct = TRUE),
+    answer(paste0("That the estimation equation is rather simple")),
+    answer(paste0("That there is only a single dependenct variable")),
+    answer(paste0("That the relationship we assume is linear")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "Is SLR part of explanatory or exploratory data analysis?", 
+    answer(paste0("Potentially both"), 
+      correct = TRUE),
+    answer(paste0("Exploratory")),
+    answer(paste0("Explanatory")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "Is SLR part of supervised or unsupervised machine learning?", 
+    answer(paste0("Supervised"), 
+      correct = TRUE),
+    answer(paste0("Unsupervised")),
+    answer(paste0("Both")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What does it mean to 'fit a model'?", 
+    answer(paste0(
+      "Choose the member of the model family under",
+      " consideration that describes the data best (according",
+      "to some pre-specified criterion)"), 
+      correct = TRUE),
+    answer(
+      paste0("Select the model family that is most suitable for the data at hand.")
+      ),
+    answer(
+      paste0("Increase the fit of the model by adding more variables.")
+      ),
+    answer(
+      paste0("Adjust a model that has been estimated for an existing data ",
+             "to a new, extended data set.")
+      ),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What kind of model family are we fitting in the context of SLR?", 
+    answer(paste0("Linear models"), 
+      correct = TRUE),
+    answer(paste0("Sub-linear models")),
+    answer(paste0("Linearized models")),
+    answer(paste0("Models with two free parameters")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+## Content quiz II
+Consider the following typical regression equation:
+
+$$y=\beta_0 + \beta_1 x_1 + \epsilon$$
+```{r quiz2}
+quiz(
+  question(
+    "What is the dependent variable?", 
+    answer(paste0("$y$"), 
+      correct = TRUE),
+    answer(paste0("$\\beta_0$")),
+    answer(paste0("$\\beta_1$")),
+    answer(paste0("$\\epsilon$")),
+    allow_retry = TRUE, random_answer_order = FALSE),
+  question(
+    "What is the intercept of the regression line to be estimated?",  
+    answer(paste0("$y$")),
+    answer(paste0("$\\beta_0$"), 
+      correct = TRUE),
+    answer(paste0("$\\beta_1$")),
+    answer(paste0("$\\epsilon$")),
+    allow_retry = TRUE, random_answer_order = FALSE),
+  question(
+    "What is the slope of the regression line to be estimated?", 
+    answer(paste0("$y$")),
+    answer(paste0("$\\beta_0$")),
+    answer(paste0("$\\beta_1$"), 
+      correct = TRUE),
+    answer(paste0("$\\epsilon$")),
+    allow_retry = TRUE, random_answer_order = FALSE),
+  question(
+    "What is the error term?", 
+    answer(paste0("$y$")),
+    answer(paste0("$\\beta_0$")),
+    answer(paste0("$\\beta_1$")),
+    answer(paste0("$\\epsilon$"), 
+      correct = TRUE),
+    allow_retry = TRUE, random_answer_order = FALSE),
+  question(
+    "What is true about the error term?", 
+    answer(paste0("It absorbs all measured effect on $y$ that are not ",
+                  "captured by $x$."), 
+      correct = TRUE),
+    answer(paste0("It corresponds to the sum of of squared residuals")),
+    answer(paste0("It is a synonymon to the term 'residual'")),
+    answer(paste0("Its inverse is a measure for the goodness of fit of a model")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is a fitted value $\\hat{y}$?", 
+    answer(paste0("The value of $y$ that the model predicts for a given $x$."), 
+      correct = TRUE),
+    answer(paste0("The part of the RSME that corresponds to the particular $y$")),
+    answer(paste0("The value that is used to estimate $\\beta_0$ and $\\beta_1$")),
+    answer(paste0("The value of $y$ that the model predicts for the mean of $x$.")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+## Content quiz III
+
+```{r quiz3}
+quiz(
+  question(
+    "What is a cost function in the context of regression analysis?", 
+    answer(paste0(
+      "A function that measures the difference between actual ",
+      "and fitted values, conditional on values for the model parameters."), 
+      correct = TRUE),
+    answer(paste0("A function that measures the computational ",
+                  "complexity of a regression model")),
+    answer(paste0("A function that measures the cost of replacing ",
+                  "one independent variable for another")),
+    answer(paste0("A function that computes the squared residuals for ",
+                  "different subsamples of $x$")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+Consider the following regression table:
+
+```{r}
+beer_data <- DataScienceExercises::beer
+linmod <- lm(consumption~price_liquor, data = beer_data)
+moderndive::get_regression_table(linmod)
+```
+
+Note that the variable `consumption` measures liters of beer consumed per 
+year, and `price_liquor` measures the price of other liquor in USD.
+
+```{r quiz4}
+quiz(
+  question(
+    "What would be the correct interpretation for the estimated coefficient of `price_liquor`?", 
+    answer(paste0(
+      "For every increase of 1 unit in `price_liquor`, ",
+      "there is an associated decrease of, on average, 9.84",
+      " liters of beer consumption."), 
+      correct = TRUE),
+    answer(paste0(
+      "For every increase of, on average, 9.84 units in `price_liquor`, ",
+      "there is an associated decrease of one",
+      " liter of beer consumption.")),
+    answer(paste0(
+      "If `price_liquor` increases by one unit, the beer consumption will, ",
+      "rise by 9.84 litres")),
+    answer(paste0(
+      "For every decrease of 1 unit in `price_liquor`, ",
+      "there is an associated decrease of, on average, 9.84",
+      " liters of beer consumption.")), 
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is the idea behind ordinary least squares estimation?", 
+    answer(paste0(
+      "Derive a mathematical solution to the problem of ",
+      "minimizing the squared residuals by choosing adequate values for the",
+      "parameters to be estimated."), 
+      correct = TRUE),
+    answer(paste0(
+      "Find the line that minimizes the squared distance between estimated ",
+      "and actual values by changing intercept and slope until the RMSE is ",
+      "minimized")),
+    answer(paste0(
+      "Compute those fitted values that maximize the ability of the model ",
+      "to predict")),
+    answer(paste0(
+      "Choose those $x$ values that are best suited to fit a linear model."
+    )),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is an estimate?", 
+    answer(paste0(
+      "The estimate is the result of choosing a particular value for a model, ",
+      "usually after applying an estimator to data."), 
+      correct = TRUE),
+    answer(paste0(
+      "An estimate is way to compute the estimator: its a formula or an algorithm")), 
+    answer(paste0(
+      "A particular prediction for a fitted value $\\hat{y}$")),
+    answer(paste0(
+      "A model that has been estimated")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is an estimator?", 
+    answer(paste0(
+      "An estimator is way to compute the estimate: its a formula or an algorithm"), 
+      correct = TRUE),
+    answer(paste0(
+      "The estimator is the result of choosing a particular value for a model, ",
+      "usually after applying an estimate to data." 
+    )),
+    answer(paste0(
+      "A procedure to minimize the sum of squared residuals"
+    )),
+    answer(paste0(
+      "The procedure to generate estimated values for $y$, i.e. the $\\hat{y}$.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What does the $R^2$ of a fitted model tells us?", 
+    answer(paste0(
+      "How much variation in the dependent variable is ",
+      "accounted for by the independent variables of the model."), 
+      correct = TRUE),
+    answer(paste0(
+      "How well our model performs in terms of predictive power")),
+    answer(paste0(
+      "How much variation in the independent variable is required to explain ",
+      "the variation in the dependent variable")),
+    answer(paste0(
+      "Whether our estimtates are indeed the best ones ",
+      "we can obtain for the given sample")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+## Coding exercises
+
+### Implementing a linear regression
+
+Consider the following data set called `cars2008`, which contains information 
+about the fuel economy of various popular car models:
+
+```{r}
+head(cars2008)
+```
+
+Now analyse the relationship between engine displacement and highway miles
+per gallon for the different cars by conducting a linear regression with
+highway miles per gallon as the dependent, and engine displacement as the 
+independent variable.
+
+*Note:* `cars2008` is a subset of the data set `mpg`, which is built-in into `R`.
+So if you need any information about the data (e.g. variable names), just 
+type `?mpg` into the console.
+
+*Hint:* To evaluate your result you need to return the regression object you
+have created.
+
+```{r ex-lmcars, exercise=TRUE}
+
+```
+
+```{r ex-lmcars-hint-1}
+lm(____)
+```
+
+```{r ex-lmcars-hint-2}
+lm(formula = ____, ____ = ____)
+```
+
+```{r ex-lmcars-hint-3}
+lm(formula = ____, data = ____)
+```
+
+```{r ex-lmcars-hint-4}
+lm(formula = ____~____, data = ____)
+```
+
+```{r ex-lmcars-hint-5}
+lm(formula = ____~____, data = cars2008)
+```
+
+```{r ex-lmcars-hint-6}
+lm(formula = hwy~____, data = cars2008)
+```
+
+```{r ex-lmcars-solution}
+lm(formula = hwy~displ, data = cars2008)
+```
+
+```{r ex-lmcars-check}
+grade_this({
+    
+    if(!inherits(.result, "lm")){
+      fail(message = paste(
+        "Your code should be produce a linear model.",
+        "Check out the function `lm()`!"))
+    }
+    
+    correct_model <- lm(formula = hwy~displ, data = cars2008)
+    call_made <- str_remove_all(as.character(.result$call), " ")
+    
+    if (("hwy~displ" %in% call_made) & all.equal(
+      unname(coefficients(correct_model)), 
+      unname(coefficients(.result)))){
+      pass()
+      }
+
+    if (("cars2008$hwy~cars2008$displ" %in% call_made) & all.equal(
+      unname(coefficients(correct_model)), 
+      unname(coefficients(.result))) & "cars2008" %in% call_made){
+      pass(message = paste(
+        "This works, but if you use the `data` argument of `lm`,",
+        "there is no need to refer to the data set in the formula: ",
+        "`lm(formula = hwy~displ, data = cars2008)`"))
+    }
+    
+    if (("cars2008$hwy~cars2008$displ" %in% call_made) & all.equal(
+      unname(coefficients(correct_model)), 
+      unname(coefficients(.result)))){
+      pass(message = paste(
+        "This works, but its better if you use the `data` argument of `lm`,",
+        "and do not refer to the data set in the formula: ",
+        "`lm(formula = hwy~displ, data = cars2008)`"))
+    }
+    
+    fail("You did not specify the call of `lm()` correctly!")
+  })
+```
+
+
+### Extracting coefficients
+
+Assume you saved your regression object as `linmod_cars`. Sometimes you might
+want to extract the estimated coefficients. Do this by using the function
+`coefficients`. If you do not know how to do it, use the help function or
+Google!
+
+```{r ex-carcoefs-setup}
+linmod_cars <- lm(formula = hwy~displ, data = cars2008)
+```
+
+```{r ex-carcoefs, exercise=TRUE}
+
+```
+
+```{r ex-carcoefs-solution}
+coefficients(linmod_cars)
+```
+
+```{r ex-carcoefs-hint-1}
+____(____)
+```
+
+```{r ex-carcoefs-hint-2}
+____(linmod_cars)
+```
+
+```{r ex-carcoefs-check}
+grade_this({
+    print(.result)
+    if(!is.double(.result)){
+      fail(message = paste(
+        "Your results should be of type `double` but is of type {typeof(.result)}!"))
+    }
+    
+    if(!stringr::str_detect(.user_code, "coefficients") ){
+      fail(message = paste(
+        "You must make use of the function `coefficients`!"))
+    }
+    
+    if(identical(.result, coefficients(linmod_cars))){
+      pass()
+    }
+    fail()
+  })
+```
+
+
+### Two types of summary tables
+
+There are two ways to extract more information out of your regression object
+you should know about: first, the standard way using the function `summary()`,
+and, second, the convenience function `moderndive::get_regression_table()`.
+
+Assume you saved your regression object under the name `linmod_cars`, as above.
+First, extract more information by applying the function `summary`!
+
+```{r ex-carsum1-setup}
+linmod_cars <- lm(formula = hwy~displ, data = cars2008)
+```
+
+```{r ex-carsum1, exercise=TRUE}
+
+```
+
+```{r ex-carsum1-hint-1}
+____(____)
+```
+
+```{r ex-carsum1-hint-2}
+summary(____)
+```
+
+```{r ex-carsum1-solution}
+summary(linmod_cars)
+```
+
+```{r ex-carsum1-check}
+grade_this({
+    
+    if(!stringr::str_detect(.user_code, "summary") ){
+      fail(message = paste(
+        "You must make use of the function `summary()`!"))
+    }
+    
+    if(identical(.result, summary(linmod_cars))){
+      pass()
+    }
+    
+    fail(paste("Pass the fitted model saved under the name `linmod_cars`",
+               "to the function `summary()`!"))
+  })
+```
+
+Now use the function `moderndive::get_regression_table()` to get a more 
+concise overview:
+
+```{r ex-carsum2-setup}
+linmod_cars <- lm(formula = hwy~displ, data = cars2008)
+```
+
+```{r ex-carsum2, exercise=TRUE}
+
+```
+
+```{r ex-carsum2-hint-1}
+____(____)
+```
+
+```{r ex-carsum2-hint-2}
+moderndive::____(____)
+```
+
+```{r ex-carsum2-hint-3}
+moderndive::get_regression_table(____)
+```
+
+```{r ex-carsum2-solution}
+moderndive::get_regression_table(linmod_cars)
+```
+
+```{r ex-carsum2-check}
+grade_this({
+    
+    if(!stringr::str_detect(.user_code, "get_regression_table") ){
+      fail(message = paste(
+        "You must make use of the function `moderndive::get_regression_table()`!"))
+    }
+    
+    if(identical(.result, moderndive::get_regression_table(linmod_cars))){
+      pass()
+    }
+    
+    fail(paste("Pass the fitted model saved under the name `linmod_cars`",
+               "to the function `moderndive::get_regression_table()`!"))
+  })
+```
+
+
+### Extracting the R squared
+
+In the lecture you learned about the $R^2$ of a regression as a measure for
+the share of explained variation in the dependent variable. Extract the $R^2$
+from the regression object `linmod_cars`. 
+
+*Hint: The $R^2$ is contained in the object produced by `summary()`. Thus, `*
+*you first need to compute the summary object, and then extract the $R^2$ from *
+*there. If you are stuck, search for hints in the internet!*
+
+```{r ex-rsquared-setup}
+linmod_cars <- lm(formula = hwy~displ, data = cars2008)
+```
+
+```{r ex-rsquared, exercise=TRUE}
+
+```
+
+```{r ex-rsquared-hint-1}
+linmod_cars_summary <- ____(____)
+linmod_cars_summary____
+```
+
+```{r ex-rsquared-hint-2}
+linmod_cars_summary <- summary(____)
+linmod_cars_summary____
+```
+
+```{r ex-rsquared-hint-3}
+linmod_cars_summary <- summary(linmod_cars)
+linmod_cars_summary____
+```
+
+```{r ex-rsquared-hint-4}
+linmod_cars_summary <- summary(linmod_cars)
+linmod_cars_summary[[____]]
+```
+
+```{r ex-rsquared-solution}
+linmod_cars_summary <- summary(linmod_cars)
+linmod_cars_summary[["r.squared"]]
+```
+
+
+```{r ex-rsquared-check}
+grade_this({
+    linmod_cars_summary <- summary(linmod_cars)
+    if(!is.double(.result)){
+      fail(message = paste(
+        "Your results should be of type `double` but is of type {typeof(.result)}!"))
+    }
+    
+    if(!stringr::str_detect(.user_code, "summary") ){
+      fail(message = paste(
+        "You must make use of the function `summary` during your solution!"))
+    }
+    
+    if(!stringr::str_detect(.user_code, "r.squared") ){
+      fail(message = paste(
+        "The function `summary` produces a list. One of its members is",
+        "the $R^2$. If you cannot find it, maybe check out the structure",
+        "of the list using `str()`!"))
+    }
+
+    if(identical(.result, linmod_cars_summary[["r.squared"]])){
+      pass()
+    }
+    
+    fail()
+  })
+```
+
+### Visualize a regression
+
+A good way to visualize your regression model is by adding a regression line
+into a `ggplot2`-object. You can achieve this by adding the geom 
+`geom_smooth(method='lm')` to your plot. Try this by making a scatter plot of
+the data set `cars2008`, where engine displacement appears on the x-axis and
+highway miles per gallon on the y-axis.
+
+*Note: This is a very useful command when you explore your data and ask *
+*yourself whether a linear model is adequate in the first place!*
+
+```{r ex-lmvis1, exercise=TRUE}
+
+```
+
+```{r ex-lmvis1-hint-1}
+ggplot(____) +
+  geom_____() +
+  geom_____(____) 
+```
+
+```{r ex-lmvis1-hint-2}
+ggplot(data = ____, mapping = ____) +
+  geom_____() +
+  geom_____(____) 
+```
+
+```{r ex-lmvis1-hint-3}
+ggplot(data = cars2008, mapping = aes(x=____, y=____)) +
+  geom_____() +
+  geom_____(____) 
+```
+
+```{r ex-lmvis1-hint-4}
+ggplot(data = cars2008, mapping = aes(x=displ, y=hwy)) +
+  geom_____() +
+  geom_____(____) 
+```
+
+```{r ex-lmvis1-hint-5}
+ggplot(data = cars2008, mapping = aes(x=displ, y=hwy)) +
+  geom_point() +
+  geom_____(____) 
+```
+
+```{r ex-lmvis1-hint-6}
+ggplot(data = cars2008, mapping = aes(x=displ, y=hwy)) +
+  geom_point() +
+  geom_smooth(____) 
+```
+
+```{r ex-lmvis1-hint-7}
+ggplot(data = cars2008, mapping = aes(x=displ, y=hwy)) +
+  geom_point() +
+  geom_smooth(method = ____) 
+```
+
+```{r ex-lmvis1-hint-8}
+ggplot(data = cars2008, mapping = aes(x=displ, y=hwy)) +
+  geom_point() +
+  geom_smooth(method = ____) 
+```
+
+```{r ex-lmvis1-solution}
+ggplot(data = cars2008, mapping = aes(x=displ, y=hwy)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_bw()
+```
+
+```{r ex-lmvis1-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  
+  fail_if(!ggcheck::uses_data(.result, cars2008), 
+          message = paste0(
+            "You should use the data set `cars2008`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  
+  fail_if(!uses_mappings(.result, aes(x=displ, y=hwy), exact = TRUE), 
+          message = paste0(
+            "You should map the variable `displ` to the x-axis, and the ",
+            "variable `hwy` to the y-axis! Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
+            )
+          )
+  
+  fail_if(!ggcheck::uses_geoms(.result, "point", exact = FALSE), 
+          message = paste0(
+            "To produce a scatterplot you must use the geom 'point'."
+            )
+          )
+  
+  fail_if(!ggcheck::uses_geoms(.result, "smooth", exact = FALSE), 
+          message = paste0(
+            "To add the regression line you need to use `geom_smooth()`."
+            )
+          )
+  
+  fail_if(!ggcheck::uses_geom_param(.result, "smooth", list(method = "lm")),
+          message = paste0(
+            "To fit a linear model with `geom_smooth()` you need to ",
+            "set the argument `method` to `'lm'`!"
+            )
+          )
+  
+  pass_if(!stringr::str_detect(.user_code, "theme_"), 
+          message = paste("But remember that the default ggplot ",
+                          "always looks a bit ugly. Cheer your result up by ",
+                          "using, e.g., `theme_bw()`!"))
+  pass()
+}
+)
+```
