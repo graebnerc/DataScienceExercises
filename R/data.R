@@ -66,7 +66,7 @@
 #'
 #' @format A data frame with 30 rows and 5 variables
 #' \describe{
-#'   \item{consumption}{litres of beer consumed}
+#'   \item{consumption}{liters of beer consumed}
 #'   \item{price}{Price of beer ($)}
 #'   \item{price_liquor}{price of other liquor ($)}
 #'   \item{price_other}{price of other goods and services (an index)}
