@@ -1,0 +1,28 @@
+---
+title: "Exercises 9: Simple Linear Regresssion"
+author: "Introduction to data science: session 11"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## Content quiz
+
+```{r quiz}
+quiz(
+  question(
+    "What is 'tidy data'?", 
+    answer(paste0(""), 
+      correct = TRUE),
+    answer(paste0("")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
