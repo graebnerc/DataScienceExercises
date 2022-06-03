@@ -1,0 +1,1043 @@
+---
+title: "Exercises 10: Multiple Linear Regresssion"
+author: "Introduction to data science: session 12 & 13"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(moderndive)
+library(ggcheck)
+
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+
+cars2008 <- dplyr::filter(mpg, year==2008)
+wine_data <- DataScienceExercises::wine2dine
+```
+
+
+## Content quiz I
+
+```{r quiz1}
+quiz(
+  question(paste(
+      "Can it be that adding a new variable to a regression",
+      "equation changes the estimates for the other variable?"),
+      answer(
+        paste0("Yes, this is true for all practically relevant cases"), 
+        correct = TRUE),
+      answer("No, adding a new variable does not change estimates for the other variables"),
+      answer("Sometimes that is the case, sometimes not."),
+      allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    paste("What is a categorial variable?"),
+    answer(
+      paste0("A variable that can take one out of a pre-specified number of different values."), 
+      correct = TRUE),
+    answer("A variable that is stored as `character`."),
+    answer("A variable that can be interpreted as representing an economic category."),
+    answer("A variable that cannot be considered within the context of linear regression analysis."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    paste("What does 'ceteris paribus' mean?"),
+    answer(
+      paste0("All other things held constant"),
+      correct = TRUE),
+    answer("F*** statistics!"),
+    answer("All variables taken into account"),
+    answer("Including the same effect of other variables"),
+    answer("Not considering other effects"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    paste("What is the 'baseline level' in a regression with a categorial variable?"),
+    answer(
+      paste0("The level against which the effects of the other levels are reported."), 
+      correct = TRUE),
+    answer("The most important result of the regression"),
+    answer("The level that is reported as the first category in the regression"),
+    answer("The most frequently occuring level of the variable in the data"),
+    answer("The level with the most intuitive interpretation"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+
+## Content quiz II
+Consider the following regression output, in which `kind` is a 
+categorial variable that can take the values `'red'` or `'white'` and 
+`alcohol` provides information about the alcohol content of the whine.
+
+```{r}
+lm(alcohol~kind, data = wine_data)
+```
+
+
+```{r quiz2}
+quiz(
+  question(
+    paste("What does the estimate for the intercept tells us?"),
+    answer(
+      paste0("The average alcohol content of red wine is 10.4%."), 
+      correct = TRUE),
+    answer(
+      paste0("The average alcohol content of white wine is 10.4%.")),
+    answer(
+      paste0("The average alcohol content of red wine is 10.4 percent ",
+             "points below that of white whine")),
+    answer(
+      paste0("On average, changing the type of wine from white to red ",
+             "is associated with an increase in the alcohol content of 10.4%")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    paste("How can we interpret the estimate `kindwhite`?"),
+    answer(
+      paste0("The average alcohol content of white wine is 0.09128 percent ",
+             "points higher than that of red wine."), 
+      correct = TRUE),
+    answer(
+      paste0("The average alcohol content of white wine is 9.128%.")),
+    answer(
+      paste0("On average, changing the type of wine from red to white ",
+             "is associated with an decrease in the alcohol content of 0.09128%"
+             )),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+## Content quiz III
+```{r quiz3}
+quiz(
+  question(
+    paste("Under which circumstances should you consider estimating",
+          "an interaction model?"),
+    answer(
+      paste0("When you have more than one explanatory variable and you suspect ",
+             "that the effect on one variable depends on the value of another."), 
+      correct = TRUE),
+    answer("Never, its only useful for paedagogical purposes"),
+    answer(paste0(
+      "When you want to estimate the effect of variables that represent ",
+      "some kind of interaction relationships between individuals."
+      )),
+    answer(paste0(
+      "When some of the explanatory variables correlate strongsly with ",
+      "each other.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    paste("When should you use a parallel slopes model instead of an interaction model?"),
+    answer(
+      paste0("When you have strong reason to believe that the effect of the ",
+             "explanatory variable is the same across groups"),
+      correct = TRUE),
+    answer("Never, its only useful for paedagogical purposes"),
+    answer("It is generally the better choice because it is more efficient"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(paste(
+    "What is the main advantage of \\bar{R}^2 over R^2?"),
+    answer(paste0(
+      "It decreases if you add an additional explanatory variable ",
+      "that does not add to the explanatory power of the model."), 
+      correct = TRUE),
+    answer(paste0(
+      "You can still interpret it as the share of explained variation in the ",
+      "dependent variable, even in the multiple regression context."
+      )),
+    answer(paste0(
+      "It is more precise once more than one independent variable is considered."
+      )),
+    answer(paste0(
+      "It takes into account the explanatory power of interaction effects ",
+      "among explanatory variables."
+      )),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(paste("What is the main drawback of $\\bar{R}^2$ as compared to $R^2$?"),
+    answer(paste0(
+      "It increases if you add an additional explanatory variable ",
+      "that does not add to the explanatory power of the model."), 
+      correct = TRUE),
+    answer(paste0(
+      "You cannot interpret it as the share of explained variation in the ",
+      "dependent variable."
+      )),
+    answer(paste0(
+      "It becomes less precise the more independent variables are considered."
+      )),
+    answer(paste0(
+      "It cannot take into account the explanatory power of interaction ",
+      "effects among explanatory variables."
+      )),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+## Coding exercises I
+### Multiple regression with continuous variables
+
+Consider the data set called `cars2008`, which contains information 
+about the fuel economy of various popular car models.
+
+Now analyse how engine displacement and relate to highway miles
+per gallon for the different cars.
+To this end, conduct a linear regression with
+highway miles per gallon as the dependent, and engine displacement and 
+number of cylinders as the independent variables.
+
+**Note:** *`cars2008` is a subset of the data set `mpg`, which is built-in into `R`.*
+*So if you need any information about the data (e.g. variable names), just*
+*type `?mpg` into the console.*
+
+**Hint:** *To evaluate your result you need to return the regression object you*
+*have created.*
+
+```{r regex-1-setup}
+cars2008 <- mpg %>% 
+  dplyr::select(all_of(c("hwy", "cyl", "displ", "manufacturer")))
+```
+
+```{r regex-1, exercise=TRUE}
+
+```
+
+```{r regex-1-hint-1}
+lm(____)
+```
+
+```{r regex-1-hint-2}
+lm(formula = ____, data = ____)
+```
+
+```{r regex-1-hint-3}
+lm(formula = ____, data = cars2008)
+```
+
+```{r regex-1-hint-4}
+lm(formula = ____~____+____, data = cars2008)
+```
+
+```{r regex-1-hint-5}
+lm(formula = hwy~____+____, data = cars2008)
+```
+
+```{r regex-1-hint-6}
+lm(formula = hwy~displ+____, data = cars2008)
+```
+
+```{r regex-1-solution}
+lm(formula = hwy~displ+cyl, data = cars2008)
+```
+
+```{r regex-1-check}
+grade_this({
+    # Test whether the type of returned object is correct
+    if(!inherits(.result, "lm")){
+      fail(message = paste(
+        "Your code should be produce a linear model.",
+        "Check out the function `lm()`!"))
+    }
+    
+    correct_model <- lm(formula = hwy~displ+cyl, data = cars2008)
+    call_made <- str_remove_all(as.character(.result$call), " ")
+    
+    # Check whether the correct data set has been used
+    if (!"cars2008" %in% call_made){
+      fail("Your call should refer to the data set 'cars2008'!")
+    }
+
+    # Check whether the correct number of coefficients is returned
+    if (length(coefficients(.result)) > 3){
+      fail("You used too many explanatory variables!")
+    } 
+    if (length(coefficients(.result)) < 3){
+      fail("You used too few explanatory variables!")
+    } 
+    
+    # Check whether the regression formula was correct
+    form_test_1 <- ("hwy~displ+cyl" %in% call_made)
+    form_test_2 <- ("hwy~cyl+displ" %in% call_made)
+    coefficient_test <- all.equal(
+      sort(unname(coefficients(correct_model))), 
+      sort(unname(coefficients(.result))))
+    
+    if ( (form_test_1 | form_test_2) & coefficient_test){
+      pass()
+    } else{
+      fail("You did not specify the call of `lm()` correctly!")
+      }
+  })
+```
+
+### Simple regression with a categorical variable
+
+Consider again the data set called `cars2008`, but now analyze how 
+driving economy measured by highway miles per gallon differs across car
+manufacturer.
+
+To this end, implement a simple regression with highway miles per gallon as the
+dependent, and the manufacturer as the independent variable.
+
+**Note:** *`cars2008` is a subset of the data set `mpg`, which is built-in into `R`.*
+*So if you need any information about the data (e.g. variable names), just*
+*type `?mpg` into the console.*
+
+**Hint:** *To evaluate your result you need to return the regression object you*
+*have created.*
+
+```{r regex-2-setup}
+cars2008 <- mpg %>% 
+  dplyr::select(all_of(c("hwy", "cyl", "displ", "manufacturer")))
+```
+
+```{r regex-2, exercise=TRUE}
+
+```
+
+```{r regex-2-hint-1}
+lm(____)
+```
+
+```{r regex-2-hint-2}
+lm(formula = ____, data = ____)
+```
+
+```{r regex-2-hint-3}
+lm(formula = ____, data = cars2008)
+```
+
+```{r regex-2-hint-4}
+lm(formula = ____~____, data = cars2008)
+```
+
+```{r regex-2-hint-5}
+lm(formula = hwy~____, data = cars2008)
+```
+
+```{r regex-2-solution}
+lm(formula = hwy~manufacturer, data = cars2008)
+```
+
+```{r regex-2-check}
+grade_this({
+    # Test whether the type of returned object is correct
+    if(!inherits(.result, "lm")){
+      fail(message = paste(
+        "Your code should be produce a linear model.",
+        "Check out the function `lm()`!"))
+    }
+    
+    correct_model <- lm(formula = hwy~manufacturer, data = cars2008)
+    call_made <- str_remove_all(as.character(.result$call), " ")
+    
+    # Check whether the correct data set has been used
+    if (!"cars2008" %in% call_made){
+      fail("Your call should refer to the data set 'cars2008'!")
+    }
+    
+    # Check whether the regression formula was correct
+    form_test_1 <- ("hwy~manufacturer" %in% call_made)
+    
+    if (form_test_1){
+      pass()
+    } else{
+      fail("You did not specify the call of `lm()` correctly!")
+      }
+  })
+```
+
+Now interpret the results to answer the following questions.
+
+**Hint:** *To get all the different values a variable takes you can use the*
+*code `unique(NAME_OF_DATA$NAME_OF_VARIABLE)`, e.g. `unique(cars2008$hwy)`.*
+
+```{r regex-quiz}
+quiz(
+  question(
+    "The baseline manufacturer in this regression was...",
+    answer("Audi", correct = TRUE),
+    answer("Honda"),
+    answer("Volkswagen"),
+    answer("Activision"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "The average highway miles per gallon of a Volkswagen are...",
+    answer(paste("more than those achieved by the cars",
+                 "from the baseline manufacturer."), correct = TRUE),
+    answer(paste("less than those achieved by the cars",
+                 "from the baseline manufacturer.")),
+    answer(paste("the same as those achieved by the cars",
+                 "from the baseline manufacturer.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "Cars from Audi require smaller amounts of fuel than those from Chevrolet!",
+    answer(paste("True!"), correct = TRUE),
+    answer(paste("False!")),
+    answer(paste("Impossible to say from this regression!")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+
+### Multiple regression with both categorical and continuous variables
+
+```{r regex-3-setup}
+gdp_lifexp <- DataScienceExercises::gdplifexp2007 %>% 
+  dplyr::select(all_of(c("lifeExp", "continent", "gdpPercap"))) %>% 
+  dplyr::filter(continent != "Oceania") %>% 
+  dplyr::mutate(gdpPercap = log(gdpPercap/1000), 
+                lifeExp = log(lifeExp))
+```
+
+Consider the data set `gdp_lifexp`. It contains the following variables:
+
+* `country`: the country
+* `lifeExp`: average life expectancy in years in this country (logarithm)
+* `continent`: the continent to which the country belongs
+* `gdpPercap`: average GDP per capita in this country (1000 USD, logarithm)
+
+Implement the following regression in R:
+
+$$lifeExp = \beta_0 + \beta_1 continent + \beta_2 gdpPercap + \epsilon$$
+
+**Note**: *To evaluate your solution, return the result by simply calling*
+*the object returned by `lm`*
+*(i.e. without using `moderndive::get_regression_table()`).*
+
+```{r regex-3, exercise=TRUE}
+
+```
+
+```{r regex-3-hint-1}
+gdp_lifexp_lm <- lm(____)
+gdp_lifexp_lm
+```
+
+```{r regex-3-hint-2}
+gdp_lifexp_lm <- lm(
+  formula = ____, 
+  data = ____)
+gdp_lifexp_lm
+```
+
+```{r regex-3-hint-3}
+gdp_lifexp_lm <- lm(
+  formula = ____, 
+  data = gdp_lifexp)
+gdp_lifexp_lm
+```
+
+```{r regex-3-hint-4}
+gdp_lifexp_lm <- lm(
+  formula = lifeExp ~ ____, 
+  data = gdp_lifexp)
+gdp_lifexp_lm
+```
+
+```{r regex-3-hint-5}
+gdp_lifexp_lm <- lm(
+  formula = lifeExp ~ continent + ____, 
+  data = gdp_lifexp)
+gdp_lifexp_lm
+```
+
+```{r regex-3-solution}
+gdp_lifexp_lm <- lm(
+  formula = lifeExp ~ continent + gdpPercap, 
+  data = gdp_lifexp)
+gdp_lifexp_lm
+```
+
+```{r regex-3-check}
+grade_this({
+    # Test whether the type of returned object is correct
+    if(!inherits(.result, "lm")){
+      fail(message = paste(
+        "Your code should be produce a linear model.",
+        "Check out the function `lm()`!"))
+    }
+    
+    correct_model <- lm(
+      formula = lifeExp ~ continent + gdpPercap, 
+      data = gdp_lifexp)
+    call_made <- str_remove_all(as.character(.result$call), " ")
+    
+    # Check whether the correct data set has been used
+    if (!"gdp_lifexp" %in% call_made){
+      fail("Your call should refer to the data set 'gdp_lifexp'!")
+    }
+
+    # Check whether the correct number of coefficients is returned
+    if (length(coefficients(.result)) > 5){
+      fail("You used too many explanatory variables!")
+    } 
+    if (length(coefficients(.result)) < 5){
+      fail("You used too few explanatory variables!")
+    } 
+    
+    # Check whether the regression formula was correct
+    form_test_1 <- ("lifeExp~continent+gdpPercap" %in% call_made)
+    form_test_2 <- ("lifeExp~gdpPercap+continent" %in% call_made)
+    coefficient_test <- all.equal(
+      sort(unname(coefficients(correct_model))), 
+      sort(unname(coefficients(.result))))
+    
+    if ( (form_test_1 | form_test_2) & coefficient_test){
+      pass()
+    } else{
+      fail("You did not specify the call of `lm()` correctly!")
+      }
+  })
+```
+
+
+## Coding exercises II
+
+### The parallel slopes model
+
+```{r regex-4-setup}
+teaching_evals <- moderndive::evals %>%
+  select(all_of(c("age", "score", "gender")))
+```
+
+The model you implemented in the previous exercise is one example for what is 
+called a *parallel slopes model*.
+To see why, first estimate the following model for the data set 
+`teaching_evals`, which contains the following variables:
+
+* `score`: the teaching score that the professor received in a teaching 
+evaluation, ranging from `1` (very unsatisfactory) to `5` (excellent)
+* `age`: the age of the professor
+* `gender`: the gender of the professor (`male` or `female`)
+
+Estimate this model and return the regression object:
+
+$$score = \beta_0 + \beta_1 age + \beta_2 gender + \epsilon$$
+
+```{r regex-4, exercise=TRUE}
+
+```
+
+```{r regex-4-hint-1}
+teaching_evals_psm <- lm(____)
+teaching_evals_psm
+```
+
+```{r regex-4-hint-2}
+teaching_evals_psm <- lm(
+  formula = ____, 
+  data = ____)
+teaching_evals_psm
+```
+
+```{r regex-4-hint-3}
+teaching_evals_psm <- lm(
+  formula = ____, 
+  data = teaching_evals)
+teaching_evals_psm
+```
+
+```{r regex-4-hint-4}
+teaching_evals_psm <- lm(
+  formula = score ~ ____, 
+  data = teaching_evals)
+teaching_evals_psm
+```
+
+```{r regex-4-hint-5}
+teaching_evals_psm <- lm(
+  formula = score ~ age + ____, 
+  data = teaching_evals)
+teaching_evals_psm
+```
+
+```{r regex-4-solution}
+teaching_evals_psm <- lm(
+  formula = score ~ age + gender, 
+  data = teaching_evals)
+teaching_evals_psm
+```
+
+```{r regex-4-check}
+grade_this({
+    # Test whether the type of returned object is correct
+    if(!inherits(.result, "lm")){
+      fail(message = paste(
+        "Your code should be produce a linear model.",
+        "Check out the function `lm()`!"))
+    }
+    
+    correct_model <- lm(
+      formula = score ~ age + gender, 
+      data = teaching_evals)
+    call_made <- str_remove_all(as.character(.result$call), " ")
+    
+    # Check whether the correct data set has been used
+    if (!"teaching_evals" %in% call_made){
+      fail("Your call should refer to the data set 'teaching_evals'!")
+    }
+
+    # Check whether the correct number of coefficients is returned
+    if (length(coefficients(.result)) > 3){
+      fail("You used too many explanatory variables!")
+    } 
+    if (length(coefficients(.result)) < 3){
+      fail("You used too few explanatory variables!")
+    } 
+    
+    # Check whether the regression formula was correct
+    form_test_1 <- ("score~age+gender" %in% call_made)
+    form_test_2 <- ("score~gender+age" %in% call_made)
+    coefficient_test <- all.equal(
+      sort(unname(coefficients(correct_model))), 
+      sort(unname(coefficients(.result))))
+    
+    if ( (form_test_1 | form_test_2) & coefficient_test){
+      pass()
+    } else{
+      fail("You did not specify the call of `lm()` correctly!")
+      }
+  })
+```
+
+```{r gender-quiz}
+quiz(
+  question(
+    "Which of the following conclusions can you draw from the results?",
+    answer("Older teachers tend to receive lower scores", correct = TRUE),
+    answer("Male teachers tend to receive lower scores"),
+    answer("Female teachers tend to receive lower scores", correct = TRUE),
+    answer("Older teachers tend to receive lower scores when they are male"),
+    answer("Older teachers tend to receive lower scores but only if they are female"),
+    answer(paste("Both male and female teachers tend to receive lower",
+                 "scores when they are older, but the effect is much",
+                 "stronger for female teachers.")),
+    answer(paste("Both male and female teachers tend to receive lower",
+                 "scores when they are older, but the effect is much",
+                 "stronger for male teachers.")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+To see why these models are called *parallel slopes models*, visualize the 
+model using `ggplot2`. To this end, create a scatter plot, with `age` being on 
+the x-axis, and `score` being on the y-axis.
+Add a separate
+regression line using the geom function `geom_parallel_slopes(se = FALSE)`,
+which is provided by the package `moderndive`.
+To get separate lines for males and females, map the variable `gender` on the
+aesthetic `color`.
+
+
+```{r regex-5-setup}
+teaching_evals <- moderndive::evals %>%
+  select(all_of(c("age", "score", "gender")))
+```
+
+```{r regex-5, exercise=TRUE}
+
+```
+
+```{r regex-5-hint-1}
+ggplot(____) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-hint-2}
+ggplot(
+  data = ____, 
+  mapping = ____
+) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-hint-3}
+ggplot(
+  data = teaching_evals, 
+  mapping = ____
+) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-hint-4}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = ____, y = ____, color = ____)
+) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-hint-5}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = ____, y = ____, color = ____)
+) +
+  geom_point() +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-hint-6}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = ____)
+) +
+  geom_point() +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-hint-7}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = gender)
+) +
+  geom_point() +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-5-solution}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = gender)
+  ) +
+  geom_point() +
+  geom_parallel_slopes(se = FALSE) +
+  theme_bw()
+```
+
+```{r regex-5-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, teaching_evals), 
+          message = paste0(
+            "You should use the data set `teaching_evals`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x = age, y = score, color = gender), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `age` to the x-axis, the variable ",
+            "`score` to the y-axis, and the variabe `gender` to the color!" ,
+            "Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, together with `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!ggcheck::uses_geoms(.result, c("point"), exact = FALSE), 
+          message = paste0(
+            "You were asked to construct a scatter plot with a regression ",
+            "line, but are missing the points...what geom is missing?"
+            )
+          )
+  if(!str_detect(.user_code, "geom_parallel_slopes\\(se = FALSE\\)")){
+    fail("You are missing the call to 'geom_parallel_slopes(se = FALSE)'!")
+  }
+  pass()
+})
+```
+
+### The interaction model
+Now extend the model you estimated in the previous exercise to also account for
+interaction effects between the variables `age` and `gender`.
+
+```{r regex-6, exercise=TRUE}
+
+```
+
+```{r regex-6-hint-1}
+teaching_evals_int <- lm(____)
+teaching_evals_int
+```
+
+```{r regex-6-hint-2}
+teaching_evals_int <- lm(
+  formula = ____, 
+  data = ____)
+teaching_evals_int
+```
+
+```{r regex-6-hint-3}
+teaching_evals_int <- lm(
+  formula = ____, 
+  data = teaching_evals)
+teaching_evals_int
+```
+
+```{r regex-6-hint-4}
+teaching_evals_int <- lm(
+  formula = score ~ ____, 
+  data = teaching_evals)
+teaching_evals_int
+```
+
+```{r regex-6-hint-5}
+teaching_evals_int <- lm(
+  formula = score ~ age * ____, 
+  data = teaching_evals)
+teaching_evals_int
+```
+
+```{r regex-6-solution}
+teaching_evals_int <- lm(
+  formula = score ~ age * gender, 
+  data = teaching_evals)
+teaching_evals_int
+```
+
+```{r regex-6-check}
+grade_this({
+    # Test whether the type of returned object is correct
+    if(!inherits(.result, "lm")){
+      fail(message = paste(
+        "Your code should be produce a linear model.",
+        "Check out the function `lm()`!"))
+    }
+    
+    correct_model <- lm(
+      formula = score ~ age * gender, 
+      data = teaching_evals)
+    call_made <- str_remove_all(as.character(.result$call), " ")
+    
+    # Check whether the correct data set has been used
+    if (!"teaching_evals" %in% call_made){
+      fail("Your call should refer to the data set 'teaching_evals'!")
+    }
+    
+    # Check whether an interaction model was used
+    if (!TRUE %in% str_detect(call_made, "\\*")){
+      fail(paste(
+        "Remember that in interaction models you connect explanatory",
+        "variables via `*` instead of `+`!"))
+    }
+
+    # Check whether the correct number of coefficients is returned
+    if (length(coefficients(.result)) > 4){
+      fail("You used too many explanatory variables!")
+    } 
+    if (length(coefficients(.result)) < 4){
+      fail("You used too few explanatory variables!")
+    } 
+    
+    # Check whether the regression formula was correct
+    form_test_1 <- ("score~age*gender" %in% call_made)
+    form_test_2 <- ("score~gender*age" %in% call_made)
+    coefficient_test <- all.equal(
+      sort(unname(coefficients(correct_model))), 
+      sort(unname(coefficients(.result))))
+    
+    if ( (form_test_1 | form_test_2) & coefficient_test){
+      pass()
+    } else{
+      fail(paste(
+        "You did not specify the call of `lm()` correctly!"))
+      }
+  })
+```
+
+```{r model-quiz}
+quiz(
+  question(
+    "Which of the following conclusions can you draw from the results?",
+    answer("Male teachers tend to receive lower scores than female teachers"),
+    answer("Female teachers tend to receive lower scores than male teachers", 
+           correct = TRUE),
+    answer("Older teachers tend to receive lower scores only when they are male"),
+    answer("Older teachers tend to receive lower scores but only if they are female"),
+    answer(paste("Both male and female teachers tend to receive lower",
+                 "scores when they are older, but the effect is much",
+                 "stronger for female teachers."), correct = TRUE),
+    answer(paste("Both male and female teachers tend to receive lower",
+                 "scores when they are older, but the effect is much",
+                 "stronger for male teachers.")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+To see how this model differs from the parallel slopes model above, visualize the 
+model using `ggplot2`. To this end, create a scatter plot, with `age` being on 
+the x-axis, and `score` being on the y-axis.
+Add a separate regression line using the geom function 
+`geom_smooth(method = 'lm', se = FALSE)`
+To get separate lines for males and females, map the variable `gender` on the
+aesthetic `color`.
+
+
+```{r regex-7-setup}
+teaching_evals <- moderndive::evals %>%
+  select(all_of(c("age", "score", "gender")))
+```
+
+```{r regex-7, exercise=TRUE}
+
+```
+
+```{r regex-7-hint-1}
+ggplot(____) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-2}
+ggplot(
+  data = ____, 
+  mapping = ____
+) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-3}
+ggplot(
+  data = teaching_evals, 
+  mapping = ____
+) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-4}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = ____, y = ____, color = ____)
+) +
+  ____ +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-5}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = ____, y = ____, color = ____)
+) +
+  geom_point() +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-6}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = ____)
+) +
+  geom_point() +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-7}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = gender)
+) +
+  geom_point() +
+  ____ +
+  theme_bw()
+```
+
+```{r regex-7-hint-8}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = gender)
+  ) +
+  geom_point() +
+  geom_smooth(____) +
+  theme_bw()
+```
+
+```{r regex-7-solution}
+ggplot(
+  data = teaching_evals, 
+  mapping = aes(x = age, y = score, color = gender)
+  ) +
+  geom_point() +
+  geom_smooth(se=FALSE, method="lm") +
+  theme_bw()
+```
+
+```{r regex-7-check}
+grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, teaching_evals), 
+          message = paste0(
+            "You should use the data set `teaching_evals`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x = age, y = score, color = gender), 
+                         exact = TRUE), 
+          message = paste0(
+            "You should map the variable `age` to the x-axis, the variable ",
+            "`score` to the y-axis, and the variabe `gender` to the color!" ,
+            "Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, together with `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!ggcheck::uses_geoms(.result, c("point"), exact = FALSE), 
+          message = paste0(
+            "You were asked to construct a scatter plot with a regression ",
+            "line, but are missing the points...what geom is missing?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, c("smooth"), exact = FALSE), 
+          message = paste0(
+            "You were asked to construct a scatter plot with a regression ",
+            "line, but are missing the regression line...what geom is missing?"
+            )
+          )
+  
+  if(!uses_geom_params(.result, "smooth", list(method = "lm"))){
+    fail(paste0(
+      "You forgot the set the optional argument `method` for the smooth ",
+      "geom to `'lm'`. Google can help you to find out what to do!"))
+  }
+  
+  if(!uses_geom_params(.result, "smooth", list(se = FALSE))){
+    fail(paste0(
+      "You forgot the set the optional argument `se` for the smooth ",
+      "geom to `FALSE`."))
+  }
+  pass()
+})
+```
+
+```{r model-quiz2}
+quiz(
+  question(
+    "Considering the case above, which of the two models is to be preferred?",
+    answer("The parallel slopes model"),
+    answer("The interaction model", correct = TRUE),
+    answer("It does not matter"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
