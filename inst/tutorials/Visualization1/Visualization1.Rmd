@@ -987,7 +987,7 @@ grade_this({
                          exact = TRUE), 
           message = paste0(
             "There is a problem with your mapping. You only need one variable " ,
-            "this time. Think about which axis it would make sense to plot it "
+            "this time. Think about which axis it would make sense to plot it ",
             "onto. As usual, use the argument `mapping` ",
             "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
             )
@@ -1054,7 +1054,7 @@ grade_this({
                          exact = TRUE), 
           message = paste0(
             "There is a problem with your mapping. You only need one variable " ,
-            "this time. Think about which axis it would make sense to plot it "
+            "this time. Think about which axis it would make sense to plot it ",
             "onto. As usual, use the argument `mapping` ",
             "of the `ggplot2::ggplot()` function, as well as `ggplot2::aes()`."
             )
