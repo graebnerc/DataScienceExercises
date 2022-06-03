@@ -27,7 +27,8 @@ quiz(
     answer(paste0(
       "By clicking on ",
       "`Session/Set Working Directory/Print Working Directory` in R-Studio.")),
-    answer("By searching for the `.Rproj` file in your file explorer.")
+    answer("By searching for the `.Rproj` file in your file explorer."),
+    allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(
     "Which of the following statements about working directories are correct?",
@@ -38,7 +39,8 @@ quiz(
     answer("The default working directory for R is the user directory", 
            correct = TRUE),
     answer(paste0("If you open an R-project, the working directory is set to ", 
-                  "the location of the `.Rproj`-file."))
+                  "the location of the `.Rproj`-file.")),
+    allow_retry = TRUE, random_answer_order = TRUE
   ),
   question("What is the difference between absolute and relative paths?",
     answer(paste0("Absolute paths start at the root, ", 
@@ -50,7 +52,8 @@ quiz(
                   "only point to the directory in which files might be stored")),
     answer(paste0("Relative paths are always relative to the `.Rproj`-file ",
                   "of the current project, absolute paths always start at ",
-                  "the working directory."))
+                  "the working directory.")),
+    allow_retry = TRUE, random_answer_order = TRUE
     ),
   question(
     "Should you generally use absolute or relative paths?",
@@ -61,7 +64,8 @@ quiz(
       "since they contain the whole paths, starting from the computer root.")),
     answer(paste0("Relative paths are always a bad idea because ", 
                   "they are dependent on your current working directory.")),
-    answer(paste0("It does not really matter, both have their pros and cons."))
+    answer(paste0("It does not really matter, both have their pros and cons.")),
+    allow_retry = TRUE, random_answer_order = TRUE
     ),
   question(
     paste0("When creating a new project directory, which of the ",
@@ -77,7 +81,8 @@ quiz(
     answer("`input`, in which you save your raw data that serves as input"),
     answer(paste0(
       "`public`, in which you store files meant for all public users ", 
-      "(such as `LICENSE.md` or `README.md`)."))
+      "(such as `LICENSE.md` or `README.md`).")),
+    allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(
     "What is the package `here` used for?",
@@ -97,7 +102,8 @@ quiz(
     answer(paste0(
       "It provides a number of functions that allow you to change the ",
       "working directory, to create new R-projects, and to facilitate code ",
-      "sharing."))
+      "sharing.")),
+    allow_retry = TRUE, random_answer_order = TRUE
   )
 )
 ```
