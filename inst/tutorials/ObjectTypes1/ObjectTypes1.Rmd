@@ -105,7 +105,7 @@ quiz(
       'Applying a function to all elements of an atomic vector by applying it to the vector itself.', 
       correct = TRUE),
     answer("Apply an operation to different vectors and store the result in a single vector."),
-    answer("Apply an operation to a list and storing the results in a vector"),
+    answer("Apply an operation to a list and storing the results in a vector."),
     answer("Store several functions in a vector and apply them to a single input at once."),
     allow_retry = TRUE, random_answer_order = TRUE
   ),

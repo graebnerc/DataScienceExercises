@@ -68,9 +68,9 @@ quiz(
     "When you render an R-Markdown document, the working directoy used " ,
     "to evaluate relative paths is..."),
     answer("The location of the `.Rmd`-file.", correct = TRUE),
-    answer("The location of the `.Rproj`-file"),
-    answer("The root directory of your computer"),
-    answer("The working directory of the current R project"),
+    answer("The location of the `.Rproj`-file."),
+    answer("The root directory of your computer."),
+    answer("The working directory of the current R project."),
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```

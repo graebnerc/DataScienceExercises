@@ -106,8 +106,7 @@ quiz(
       correct = TRUE),
     answer('Every aesthetic can be combined, in principle, with every geom.'),
     answer(paste0(
-      "For most geoms, there are some aesthetics that do not work,", 
-      "but each aesthetic can be used to specify any geom.")),
+      "Each aesthetic can be used to specify any geom, but not vice versa.")),
     answer(paste0(
       'Aesthetics and geoms and two substitutive ways to map data onto ', 
       'visual properties of a plot.')),

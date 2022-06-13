@@ -89,12 +89,12 @@ quiz(
     answer(paste0(
       "It takes relative paths as an argument, and produces ",
       "computer-specific absolute paths, based on information about the ",
-      "relative location of the current file in your R project"), 
+      "relative location of the current file in your R project."), 
       correct=TRUE),
     answer(paste0(
       "It automatically sets the working directory of your ",
       "project to the place of the nearest `.Rproj` file, ",
-      "allowing you to run code on different computers")),
+      "allowing you to run code on different computers.")),
     answer(paste0(
       "After setting your position via `here::i_am()` you can ",
       "translate arbitrary file paths into paths to your current ",

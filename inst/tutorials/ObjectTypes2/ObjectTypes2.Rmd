@@ -54,7 +54,7 @@ quiz(
       'The elements of a list can have different lengths, the elements of data.frames cannot.', 
       correct = TRUE),
     answer("A list can contain elements of different types, data.frames cannot."),
-    answer("A data.frame is used to store data, but lists are used to store objects"),
+    answer("A data.frame is used to store data, but lists are used to store objects."),
     answer("The elements of lists can be names, that of data.frames cannot."),
     allow_retry = TRUE, random_answer_order = TRUE
   ),
@@ -79,7 +79,8 @@ quiz(
       'It can only contain a pre-specified number of element values.', 
       correct = TRUE),
     answer('It stores words in a more memory-efficient way.'),
-    answer("It can be used to store ordinal and interval data"),
+    answer("It can be used to store ordinal and interval data."),
+    answer("It is the only vector type that can store categorial variables."),
     answer("It is the only vector type that can contain different types of data."),
     allow_retry = TRUE, random_answer_order = TRUE
   )

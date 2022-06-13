@@ -44,9 +44,9 @@ quiz(
     paste0(
     "Which of the following demands is part of the definition of tidy data?"
     ),
-    answer('Every row corresponds to one and only one observation', correct = TRUE),
-    answer('Every column corresponds to one and only one variable', correct = TRUE),
-    answer('Every cell corresponds to one and only one value', correct = TRUE),
+    answer('Every row corresponds to only one observation', correct = TRUE),
+    answer('Every column corresponds to one variable', correct = TRUE),
+    answer('Every cell corresponds to one value', correct = TRUE),
     answer('The data is stored in a `tibble`'),
     answer('There are no illegal variable names'),
     answer('Data were collected in a transparent and convincing way'),
