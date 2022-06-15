@@ -1,0 +1,729 @@
+---
+title: "Exercises 11: Sampling"
+author: "Introduction to data science: session 14"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(ggplot2)
+library(moderndive)
+library(ggcheck)
+
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+
+EUFstudents_fem <- DataScienceExercises::EUFstudents %>% 
+  dplyr::filter(Gender=="female") %>% 
+  dplyr::select(Height)
+```
+
+## Content quiz
+
+```{r quiz}
+quiz(
+  question(
+    "What is the relationship between a 'sample' and a 'population'?", 
+    answer(paste0("The sample is a subset of the population."), 
+      correct = TRUE),
+    answer(paste0("The population is a subset of the sample.")),
+    answer(paste0(
+      "Samples are merged subsets of different populations, despite being ",
+      "used to study only one particular population among them.")),
+    answer(paste0("Samples and populations are fully independent concepts.")),
+    answer(paste0("A sample is the generalization of a population ",
+                  "(e.g. for the purpose of prediction).")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What do mean by 'sample variation'?", 
+    answer(paste0(
+      "The fact that different random samples from the same population ",
+      "differ from each other."), 
+      correct = TRUE),
+    answer(paste0(
+      "That samples consists of different elements, which are typically ",
+      "heterogeneous.")),
+    answer(paste0("The fact that in order to get representative samples we ",
+                  "need to vary the techniques used to gather the sample.")),
+    answer(paste0(
+      "The variation of sample statistics over different observation periods.")),
+    answer(paste0("The variation coefficient of a single sample.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is a 'Monte Carlo Simulation'?", 
+    answer(paste0(
+      "A simulation that studies a random process by repeating it many times."), 
+      correct = TRUE),
+    answer(paste0(
+      "A simulation to assess the properties of Monte Carlo estimations.")),
+    answer(paste0(
+      "A kind of simulation that is used to study the sampling ",
+      "variation of estimators.")),
+    answer(paste0(
+      "A simulation that studies deterministic processes ",
+      "using probabilistic techniques.")),
+    answer(paste0(
+      "A simulation that is used to find the right sampling ",
+      "methodology for the population of interest.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is a 'population parameter'?", 
+    answer(paste0(
+      "A statistical property of the population that is of interest"), 
+      correct = TRUE),
+    answer(paste0(
+      "A parameter of the process that has generated the population.")),
+    answer(paste0(
+      "A parameter that determines how one can sample from a population.")),
+    answer(paste0(
+      "A parameter to be estimated using a population census.")),
+    answer(paste0(
+      "A parameter of a population that is used to estimate the sampling variation.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is a 'sample statistic'?", 
+    answer(paste0(
+      "A statistic computed for the sample and that is to be used to ",
+      "estimate a population parameter of interest"), 
+      correct = TRUE),
+    answer(paste0(
+      "An estimate for a given random sample used to estimate sample variation.")),
+    answer(paste0(
+      "Any statistic describing a property of a sample.")),
+    answer(paste0(
+      "A statistical property of a population that determines the respective ",
+      "properties of its samples.")),
+    answer(paste0(
+      "A randomly selected statistic that is used to analyse a population.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is a 'sampling distribution'?", 
+    answer(paste0("The distribution of a sample statistic."), 
+      correct = TRUE),
+    answer(paste0("The distribution of a sample.")),
+        answer(paste0(
+      "The distribution of a sample statistic within a single random sample.")),
+    answer(paste0(
+      "The random distribution that best describes a given random sample.")),
+    answer(paste0(
+      "The distribution that best describes the sampling behavior of a researcher.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is a 'standard error'?", 
+    answer(paste0(
+      "The standard deviation of the sampling distribution ",
+      "of a sample statistic."), 
+      correct = TRUE),
+    answer(paste0(
+      "The error that inevitably occurs during every estimation based on ",
+      "random samples.")),
+    answer(paste0(
+      "The standard error of the distribution of estimates for the sample ",
+      "variation.")),
+    answer(paste0(
+      "The standard deviation of a population parameter.")),
+    answer(paste0(
+      "The variance of a sample statistic of interest.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "When do we say that a sample is 'unbiased'?", 
+    answer(paste0(
+      "If each member of the population has the same probability ",
+      "to become a member of the sample."), 
+      correct = TRUE),
+    answer(paste0(
+      "If results obtained from the sample can be generalized to the ", 
+      "population the sample was drawn from.")),
+    answer(paste0(
+      "If the sample size is large enough for the resulting estimators to be ",
+      "unbiased.")),
+    answer(paste0(
+      "If the sample was drawn randomly.")),
+    answer(paste0(
+      "If the sample composition resembles that of the underlying population.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is the difference between 'accuracy' and 'precision'?", 
+    answer(paste0(
+      "Precision refers to the spread of estimates, ", 
+      "accuracy to their level of bias."), 
+      correct = TRUE),
+    answer(paste0("There is no different, the two are synonymous.")),
+    answer(paste0(
+      "Accuracy refers to how well an estimator avoids bias, precision to ",
+      "how well the estimator avoids inconsistency.")),
+    answer(paste0(
+      "Accuracy measures the difference between the expeceted value of an ",
+      "estimator and its true value, precision the variance of the estimator ",
+      "and the variance of the population parameter of interest.")),
+    answer(paste0(
+      "Precision refers to the compuational cost in relation to how well the ",
+      "estimator captures the true population parameter, accuracy refers to ",
+      "the abolute level of unbiasedness.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "What is the central message of the Central Limit Theorem (CLT)?", 
+    answer(paste0(
+      "When a sample becomes larger, its sampling distribution ",
+      "becomes narrower and more normally distributed ",
+      "(regardless of the population distribution)."), 
+      correct = TRUE),
+    answer(paste0(
+      "When we draw many samples from the same population, their ",
+      "sampling distribution will start resembling the distribution of ",
+      "the underlying population.")),
+    answer(paste0(
+      "When we draw more and more samples from one population, the mean of ",
+      "the samples approaches the mean of the underlying population.")),
+    answer(paste0(
+      "When sample size increases, the standard error of the estimates ",
+      "becomes larger.")),
+    answer(paste0(
+      "Increasing the sample size reduces the bias of any estimate based on ",
+      "sample statistics, and an infinitely large sample has a bias of zero.")),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+## Coding exercises I: iteration via for-loops
+
+Suppose you want to study the sample distribution of a sample statistic,
+in the present case the standard deviation of the height of all female students
+from the EUF. 
+
+The data set `EUFstudents_fem` contains a census of all female students and
+their height. We want to draw 1000 artificial samples from this data and
+compute the standard deviation of each sample, and then study the sample 
+variation.
+
+### Produce an output container
+
+We decide to implement this task by using a for-loop. Thus, the first step
+is to create a container vector that contains 1000 `NA`s. Create this vector,
+name it `res_container` and return it.
+
+
+```{r sampex-1, exercise=TRUE}
+
+```
+
+<div id="sampex-1-hint">
+**Hint:** Use the function `rep()` to complete this task.
+</div>
+
+```{r sampex-1-solution}
+res_container <- rep(NA, 1000)
+```
+
+
+```{r sampex-1-check}
+grade_this({
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+    # Check whether the correct data set has been used
+  if (!str_detect(bare_code, "res_container<-")){
+    fail("Your call should define an object named 'res_container'!")
+    }
+  if (!str_detect(bare_code, "rep")){
+    fail("Your call should make use of the function 'rep()'!")
+    }
+  if (identical(.result, rep(NA, 1000))){
+    pass()
+    }
+  fail()
+})
+```
+
+### Implement the random process
+
+It is always a good idea to first define the random process under scrutiny
+in isolation. Thus, start by writing code that draws a random sample of size
+20 from the population of all female students at the EUF (which is available
+as `EUFstudents_fem`.)
+
+**Note:** *To allow for an evaluation of your solution you need to keep the *
+*first line with `set.seed(123)` below!*
+
+```{r sampex-2, exercise=TRUE}
+set.seed(123)
+```
+
+<div id="sampex-2-hint">
+**Hint:** Use the function `sample()` to draw a sample.
+</div>
+
+```{r sampex-2-hint-1}
+set.seed(123)
+sample(____)
+```
+
+```{r sampex-2-hint-2}
+set.seed(123)
+sample(x = ____, size = 20)
+```
+
+```{r sampex-2-hint-3}
+set.seed(123)
+sample(x = EUFstudents_fem[[____]], size = 20)
+```
+
+```{r sampex-2-solution}
+set.seed(123)
+sample(EUFstudents_fem[["Height"]], size = 20)
+```
+
+```{r sampex-2-check}
+grade_this({
+  set.seed(123)
+  solution <- sample(EUFstudents_fem[["Height"]], size = 20)
+  
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+    # Check whether the correct data set has been used
+  if (!str_detect(bare_code, "EUFstudents_fem")){
+    fail("You must refer to the data set 'EUFstudents_fem'!")
+    }
+  if (!str_detect(bare_code, "Height")){
+    fail("You must refer to the column 'Height'!")
+    }
+  if (!str_detect(bare_code, "sample\\(")){
+    fail("You must refer to the function 'sample()'!")
+    }
+  if (length(.result)!=20){
+    fail("Your sample should be of length 20, not {length(.result)}!")
+    }
+  if (identical(.result, solution)){
+    pass()
+    }
+  fail()
+})
+```
+
+### Conduct the full MCS
+
+Now you know how to draw a single sample! Now build a for loop that reiterates
+the following 1000 times:
+
+* Draw a sample of size 20 as you did in the previous exercise
+* Compute the standard deviation for this sample
+* Save this standard deviation in the vector `res_container`, which you have
+defined above
+* Return the vector `res_container`
+
+**Note:** *To allow for an evaluation of your solution you need to keep the *
+*first line with `set.seed(123)` below!*
+
+```{r sampex-3-setup}
+res_container <- rep(NA, 1000)
+```
+
+```{r sampex-3, exercise=TRUE}
+set.seed(123)
+
+```
+
+```{r sampex-3-hint-1}
+set.seed(123)
+for (____){
+  ____
+}
+res_container
+```
+
+```{r sampex-3-hint-2}
+set.seed(123)
+for (i in seq_along(res_container)){
+  ____
+}
+res_container
+```
+
+```{r sampex-3-hint-3}
+set.seed(123)
+for (i in seq_along(res_container)){
+  sample_drawn <- ____
+  sample_sd <- ____
+  res_container____ <- sample_sd
+}
+res_container
+```
+
+```{r sampex-3-hint-4}
+set.seed(123)
+for (i in seq_along(res_container)){
+  sample_drawn <- sample(x = EUFstudents_fem[["Height"]], size = 20)
+  sample_sd <- ____
+  res_container____ <- sample_sd
+}
+res_container
+```
+
+```{r sampex-3-hint-5}
+set.seed(123)
+for (i in seq_along(res_container)){
+  sample_drawn <- sample(x = EUFstudents_fem[["Height"]], size = 20)
+  sample_sd <- sd(____)
+  res_container____ <- sample_sd
+}
+res_container
+```
+
+```{r sampex-3-hint-6}
+set.seed(123)
+for (i in seq_along(res_container)){
+  sample_drawn <- sample(x = EUFstudents_fem[["Height"]], size = 20)
+  sample_sd <- sd(____)
+  res_container[i] <- sample_sd
+}
+res_container
+```
+
+```{r sampex-3-solution}
+set.seed(123)
+for (i in seq_along(res_container)){
+  sample_drawn <- sample(x = EUFstudents_fem[["Height"]], size = 20)
+  sample_sd <- sd(sample_drawn)
+  res_container[i] <- sample_sd
+}
+res_container
+```
+
+```{r sampex-3-check}
+grade_this({
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+  if (!str_detect(bare_code, "for")){
+    fail("You should use a for-loop in your solution!")
+    }
+  if (!str_detect(bare_code, "EUFstudents_fem")){
+    fail("You must refer to the data set 'EUFstudents_fem'!")
+    }
+  if (!str_detect(bare_code, "Height")){
+    fail("You must refer to the column 'Height'!")
+    }
+  if (!str_detect(bare_code, "sample\\(")){
+    fail("You must refer to the function 'sample()'!")
+    }
+  if (!str_detect(bare_code, "sd\\(")){
+    fail(paste0(
+      "To compute the standard deviation of the sample you ",
+      "must refer to the function 'sd()'!"))
+    }
+  if (identical(.result, rep(NA, 1000))){
+    fail(paste0(
+      "You did not alter the vector `res_container`. ",
+      "Make sure that the result of each iteration step gets ",
+      "stored in this vector!"))
+    }
+  if (!str_detect(bare_code, "res_container\\[")){
+    fail(paste0(
+      "In each round of the loop you must store the result ",
+      "in `res_container`. Check out vector indexing if you do ",
+      "not remember how to do it!"))
+  }
+  set.seed(123)
+  solution <- purrr::map_dbl(
+    .x = seq_along(res_container), 
+    .f = ~sd(sample(x = EUFstudents_fem[["Height"]], size = 20)))
+  if (identical(.result, solution)){
+    pass()
+    }
+  fail()
+})
+```
+
+
+## Coding exercises II: iteration using the purrr package
+
+### Rewrite code using the purrr-package
+
+An alternative way to conduct MCS is to use the functions provided by the 
+`purrr`-package. Implement the same exercise as you did before, but this time
+use the function `purrr::map_dbl()`.
+
+**Note:** *To allow for an evaluation of your solution you need to keep the *
+*first line with `set.seed(123)` below!*
+
+```{r sampex-4, exercise=TRUE}
+set.seed(123)
+
+```
+
+```{r sampex-4-hint-1}
+set.seed(123)
+purrr::map_dbl(
+  ____
+  )
+```
+
+```{r sampex-4-hint-2}
+set.seed(123)
+purrr::map_dbl(
+  .x = ____, 
+  .f = ____
+  )
+```
+
+```{r sampex-4-hint-3}
+set.seed(123)
+purrr::map_dbl(
+  .x = seq_len(1000), 
+  .f = ____
+  )
+```
+
+```{r sampex-4-hint-4}
+set.seed(123)
+purrr::map_dbl(
+  .x = seq_len(1000), 
+  .f = ~____
+  )
+```
+
+```{r sampex-4-hint-5}
+set.seed(123)
+purrr::map_dbl(
+  .x = seq_len(1000), 
+  .f = ~sd(sample(____))
+  )
+```
+
+```{r sampex-4-solution}
+set.seed(123)
+purrr::map_dbl(
+  .x = seq_len(1000), 
+  .f = ~sd(sample(x = EUFstudents_fem[["Height"]], size = 20))
+  )
+```
+
+```{r sampex-4-check}
+grade_this({
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+  
+  if (!str_detect(bare_code, "map_dbl")){
+    fail(paste0(
+      "Your call should make use of the ",
+      "function `map_dbl()` from the package `purrr`!"))
+    }
+  set.seed(123)
+  solution <- purrr::map_dbl(
+    .x = seq_along(res_container), 
+    .f = ~sd(sample(x = EUFstudents_fem[["Height"]], size = 20)))
+  if (identical(.result, solution)){
+    pass()
+    }
+  fail()
+})
+```
+
+### Transformation into a tibble
+
+In a last step you should now visualize the result of your MCS using `ggplot2`.
+But before you can pass your result to `ggplot2` you must transform it into
+a `tibble`. Assume you stored the result of your MCS in the vector `mcs_result`.
+Transform this vector into a tibble that can then be passed to 
+`ggplot2::ggplot()` and name it `mcs_result_tbl`.
+
+```{r sampex-5-setup}
+set.seed(123)
+mcs_result <- purrr::map_dbl(
+  .x = seq_len(1000), 
+  .f = ~sd(sample(x = EUFstudents_fem[["Height"]], size = 20))
+  )
+```
+
+```{r sampex-5, exercise=TRUE}
+
+```
+
+```{r sampex-5-hint-1}
+mcs_result_tbl <- ____(mcs_result)
+mcs_result_tbl
+```
+
+```{r sampex-5-hint-2}
+mcs_result_tbl <- tibble::____(mcs_result)
+mcs_result_tbl
+```
+
+```{r sampex-5-hint-3}
+mcs_result_tbl <- tibble::as____(mcs_result)
+mcs_result_tbl
+```
+
+```{r sampex-5-solution}
+mcs_result_tbl <- tibble::as_tibble(mcs_result)
+mcs_result_tbl
+```
+
+```{r sampex-5-check}
+grade_this({
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+  
+  if (!tibble::is_tibble(.result)){
+    fail(paste0(
+      "You should produce a `tibble`, but the object you returned is ",
+      "'{class(.result)}'. To transform a vector into a tibble use the ",
+      "function `as_tibble()` from the package `tibble`!"))
+    }
+  if (identical(.result, tibble::as_tibble(mcs_result))){
+    pass()
+    }
+  fail()
+})
+```
+
+### Visualization
+
+Now visualize the results of your MCS using the just defined object 
+`mcs_result_tbl`. To this end, create a histogram using `ggplot`, where the 
+true value of the population standard variation is marked.
+
+**Hint:** *You can add a vertical line to your plot using *`geom_vline()` 
+*with the argument `xintercept`. To compute the true population standard *
+*deviation you might refer directly to *`EUFstudents_fem[["Height"]]`*!*
+
+```{r sampex-6-setup}
+set.seed(123)
+mcs_result <- purrr::map_dbl(
+  .x = seq_len(1000), 
+  .f = ~sd(sample(x = EUFstudents_fem[["Height"]], size = 20))
+  )
+mcs_result_tbl <- tibble::as_tibble(mcs_result)
+```
+
+```{r sampex-6, exercise=TRUE, warning=FALSE, message=FALSE}
+mcs_result_tbl
+```
+
+```{r sampex-6-hint-1}
+ggplot(data = ____, mapping = ____) +
+  ____ +
+  ____ +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-2}
+ggplot(data = mcs_result_tbl, mapping = ____) +
+  ____ +
+  ____ +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-3}
+ggplot(data = mcs_result_tbl, mapping = aes(x=____)) +
+  ____ +
+  ____ +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-4}
+ggplot(data = mcs_result_tbl, mapping = aes(x=value)) +
+  ____ +
+  ____ +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-5}
+ggplot(data = mcs_result_tbl, mapping = aes(x=value)) +
+  geom_____ +
+  ____ +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-6}
+ggplot(data = mcs_result_tbl, mapping = aes(x=value)) +
+  geom_histogram() +
+  ____ +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-7}
+ggplot(data = mcs_result_tbl, mapping = aes(x=value)) +
+  geom_histogram() +
+  geom_vline(xintercept = ____) +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-hint-8}
+ggplot(data = mcs_result_tbl, mapping = aes(x=value)) +
+  geom_histogram() +
+  geom_vline(xintercept = sd(____)) +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-solution}
+ggplot(data = mcs_result_tbl, mapping = aes(x=value)) +
+  geom_histogram() +
+  geom_vline(xintercept = sd(EUFstudents_fem[["Height"]])) +
+  scale_y_continuous(expand = expansion()) +
+  theme_bw()
+```
+
+```{r sampex-6-check}
+grader <- grade_this({
+  fail_if(!ggcheck::is_ggplot(.result), 
+          message = paste0(
+            "You did not define a `ggplot` object. Use the function ",
+            "`ggplot2::ggplot()`. ",
+            "Did you maybe forget to call and render the plot?"
+            )
+          )
+  fail_if(!ggcheck::uses_data(.result, mcs_result_tbl), 
+          message = paste0(
+            "You should use the data set `mcs_result_tbl`. You can pass ",
+            "it to the argument `data` of `ggplot2::ggplot()`."
+            )
+          )
+  fail_if(!uses_mappings(.result, aes(x = value), exact = TRUE), 
+          message = paste0(
+            "Since you are asked to create a histogram, you should map the " ,
+            "variable `value` to the x-axis! Use the argument `mapping` ",
+            "of the `ggplot2::ggplot()` function, together with `ggplot2::aes()`."
+            )
+          )  
+  fail_if(!ggcheck::uses_geoms(.result, c("histogram"), exact = FALSE), 
+          message = paste0(
+            "You were asked to construct a histogram... ",
+            "What geom would you use to do this?"
+            )
+          )
+  fail_if(!ggcheck::uses_geoms(.result, c("vline"), exact = FALSE), 
+          message = paste0(
+            "You were asked to add a vertical line representing the standard ",
+            "deviation of the population. Use `geom_vline()` to achieve this!"
+            )
+          )
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+  spec_eval <- (str_detect(bare_code, "sd\\(") & 
+                  str_detect(bare_code, "Height") & 
+                  str_detect(bare_code, "EUFstudents_fem"))
+  if (!spec_eval){
+    fail(paste0(
+      "To compute the standard deviation of the true population you ",
+      "must apply the function 'sd()' to the values of the correct column of ",
+      "`EUFstudents_fem`!"))
+    }
+  # Does not yet work:
+  # x_intercept <- sd(EUFstudents_fem[["Height"]])
+  # if(!uses_geom_params(.result, "vline", list(xintercept = x_intercept))){
+  #   fail(paste0(
+  #     "You forgot the set the argument `xintercept` for the vline ",
+  #     "geom to the standard deviation of the population. To compute the true ",
+  #     "standard deviation do something like `sd(EUFstudents_fem[['Height']])`!"))
+  # }
+  pass()
+})
+```
