@@ -26,3 +26,25 @@ quiz(
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
+
+## Coding exercise
+
+```{r}
+grader <- grade_this({
+  bare_code <- str_remove_all(as.character(.user_code), " ")
+    # Check whether the correct data set has been used
+  if (!str_detect(bare_code, "res_container<-")){
+    fail("Your call should define an object named 'res_container'!")
+    }
+  if (!str_detect(bare_code, "rep")){
+    fail("Your call should make use of the function 'rep()'!")
+    }
+  if (identical(.result, rep(NA, 1000))){
+    pass()
+    }
+  fail()
+})
+
+grader(mock_this_exercise(.user_code = res_container <- rep(NA, 1000) ))
+```
+
