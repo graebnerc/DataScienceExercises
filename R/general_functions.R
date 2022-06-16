@@ -7,6 +7,7 @@
 #'
 #' @param x A numerical vector
 #' @return The population variance of this vector
+#' @export
 #' @examples
 #' pop_var(c(2, 3, 4, 5))
 #' pop_var(rnorm(20, 1, 0))
