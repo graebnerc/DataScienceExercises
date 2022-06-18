@@ -76,7 +76,7 @@ quiz(
   question(
     "What is a 'population parameter'?", 
     answer(paste0(
-      "A statistical property of the population that is of interest"), 
+      "A statistical property of the population that is of interest."), 
       correct = TRUE),
     answer(paste0(
       "A parameter of the process that has generated the population.")),
@@ -91,7 +91,7 @@ quiz(
     "What is a 'sample statistic'?", 
     answer(paste0(
       "A statistic computed for the sample and that is to be used to ",
-      "estimate a population parameter of interest"), 
+      "estimate a population parameter of interest."), 
       correct = TRUE),
     answer(paste0(
       "An estimate for a given random sample used to estimate sample variation.")),

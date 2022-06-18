@@ -53,8 +53,11 @@ quiz(
     answer(paste0(
       "Choose the member of the model family under",
       " consideration that describes the data best (according",
-      "to some pre-specified criterion)"), 
+      "to some pre-specified criterion)."), 
       correct = TRUE),
+    answer(paste0(
+      "Tweaking the model parameters to improve model ",
+      "performance in the sense of the coefficient of determination.")),
     answer(
       paste0("Select the model family that is most suitable for the data at hand.")
       ),
@@ -72,6 +75,7 @@ quiz(
       correct = TRUE),
     answer(paste0("Sub-linear models")),
     answer(paste0("Linearized models")),
+    answer(paste0("Simplified models")),
     answer(paste0("Models with two free parameters")),
     allow_retry = TRUE, random_answer_order = TRUE)
 )

@@ -61,16 +61,17 @@ quiz(
   question(
     "Which of the following is true about the difference between data.frames and tibbles?",
     answer(
-      'They behave differently when being printed on screen', 
+      'They behave differently when being printed on screen.', 
       correct = TRUE),
     answer(
-      'Tibbles issue a warning when you try to extract a non-existing column, data.frames do not', 
+      'Tibbles issue a warning when you try to extract a non-existing column, data.frames do not.', 
       correct = TRUE),
     answer(
-      'Data frames encourage the use of row names, tibbles encourage not to use them', 
+      'Data frames encourage the use of row names, tibbles encourage not to use them.', 
       correct = TRUE),
-    answer('Tibbles can contain larger amounts of data'),
-    answer('Tibbles and data.frames are essentially the same, but originate from different dialects'),
+    answer('Tibbles can contain larger amounts of data.'),
+    answer("Tibbles are an updated version of the data.frame and basically replaced them."),
+    answer('Tibbles and data.frames are essentially the same, but originate from different dialects.'),
     allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(

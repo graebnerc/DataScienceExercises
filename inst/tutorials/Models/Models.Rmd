@@ -94,6 +94,7 @@ quiz(
                   "which is actually there.")),
     answer(paste0("When the data suggest a causal relationships where this is ",
                   "very implausible from a theoretical viewpoint.")),
+    answer("When the correlation between two variables is unstable over time."),
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```

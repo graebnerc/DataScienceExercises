@@ -35,7 +35,7 @@ quiz(
       correct = TRUE),
     answer("Atomic vectors contain single elements, list can also contain longer elements."),
     answer("Atomic vectors store their content in a column, lists in a list format."),
-    answer("Atomic vectors can only contain numbers, lists can contain any object type"),
+    answer("Atomic vectors can only contain numbers, lists can contain any object type."),
     answer("Atomic vectors are simpler structures that can be the input to functions, something lists cannot be."),
     allow_retry = TRUE, random_answer_order = TRUE
   ),
@@ -111,10 +111,11 @@ quiz(
   ),
   question(
     'What is the difference between `NULL` and `NA`?',
-    answer('`NULL` denotes and absent vector, `NA` an absent element of a vector', correct = TRUE),
-    answer("`NULL` is relevant in the context of lists, `NA` in the context of atomic vectors"),
+    answer('`NULL` denotes and absent vector, `NA` an absent element of a vector.', correct = TRUE),
+    answer("`NULL` is relevant in the context of lists, `NA` in the context of atomic vectors."),
     answer("`NA` denotes a missing value, `NULL` can mean 'zero' both in a numeric and character sense."),
-    answer('`NA` denotes a vector that is not available, `NULL` a vector of length zero', correct = TRUE),
+    answer('`NA` denotes a vector that is not available (i.e. has no name), `NULL` a vector of length zero.'),
+    answer("`NA` denotes a missing element in a data.frame of a tibble, `NULL` a missing element within a vector."),
     allow_retry = TRUE, random_answer_order = TRUE
   )
 )

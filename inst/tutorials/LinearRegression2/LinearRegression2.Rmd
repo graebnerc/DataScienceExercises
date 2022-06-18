@@ -61,10 +61,10 @@ quiz(
     answer(
       paste0("The level against which the effects of the other levels are reported."), 
       correct = TRUE),
-    answer("The most important result of the regression"),
-    answer("The level that is reported as the first category in the regression"),
-    answer("The most frequently occuring level of the variable in the data"),
-    answer("The level with the most intuitive interpretation"),
+    answer("The most important result of the regression."),
+    answer("The level that is reported as the first category in the regression."),
+    answer("The most frequently occuring level of the variable in the data."),
+    answer("The level with the most intuitive interpretation."),
     allow_retry = TRUE, random_answer_order = TRUE)
   )
 ```
@@ -122,13 +122,13 @@ quiz(
       paste0("When you have more than one explanatory variable and you suspect ",
              "that the effect on one variable depends on the value of another."), 
       correct = TRUE),
-    answer("Never, its only useful for paedagogical purposes"),
+    answer("Never, its only useful for paedagogical purposes."),
     answer(paste0(
       "When you want to estimate the effect of variables that represent ",
       "some kind of interaction relationships between individuals."
       )),
     answer(paste0(
-      "When some of the explanatory variables correlate strongsly with ",
+      "When some of the explanatory variables correlate strongly with ",
       "each other.")),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(
@@ -138,6 +138,7 @@ quiz(
              "explanatory variable is the same across groups"),
       correct = TRUE),
     answer("Never, its only useful for paedagogical purposes"),
+    answer("When there is no other specification without interaction effects available."),
     answer("It is generally the better choice because it is more efficient"),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(paste(
@@ -161,12 +162,12 @@ quiz(
   question(paste("What is the main drawback of $\\bar{R}^2$ as compared to $R^2$?"),
     answer(paste0(
       "It increases if you add an additional explanatory variable ",
-      "that does not add to the explanatory power of the model."), 
-      correct = TRUE),
+      "that does not add to the explanatory power of the model.")),
     answer(paste0(
       "You cannot interpret it as the share of explained variation in the ",
       "dependent variable."
-      )),
+      ), 
+      correct = TRUE),
     answer(paste0(
       "It becomes less precise the more independent variables are considered."
       )),
@@ -174,6 +175,7 @@ quiz(
       "It cannot take into account the explanatory power of interaction ",
       "effects among explanatory variables."
       )),
+    answer("It requires more observations to be properly computed."),
     allow_retry = TRUE, random_answer_order = TRUE)
   )
 ```

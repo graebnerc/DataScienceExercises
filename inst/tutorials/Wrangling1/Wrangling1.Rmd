@@ -26,19 +26,20 @@ quiz(
     answer(paste0(
       "A description of a way to organize data that allows for ",
       "easy further processing of this data for the sake of ",
-      "analysis or visualization"), 
+      "analysis or visualization."), 
       correct = TRUE),
-    answer("Data that was collected in a convincing way"),
-    answer("Data that is publicly available and that can be directly processed further"),
-    answer("Data that is documented in a way that others can use it"),
+    answer("Data that was collected in a convincing way."),
+    answer("Data that is publicly available and that can be directly processed further."),
+    answer("Data that does not contain missing values."),
+    answer("Data that is documented in a way that others can use it."),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(
     "What is the main goal of wrangling data that we discussed so far?", 
-    answer("To transform raw data into tidy data", correct = TRUE),
-    answer("To coerce data into `tibble`s"),
-    answer("To import data into R without chaning it"),
+    answer("To transform raw data into tidy data.", correct = TRUE),
+    answer("To coerce data into `tibble`s."),
+    answer("To import data into R without chaning it."),
     answer("To identify the right way to model the data"),
-    answer("To manipulate data in a transparent and reproducible way"),
+    answer("To manipulate data in a transparent and reproducible way."),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(
     paste0(
@@ -55,11 +56,11 @@ quiz(
   ), 
   question(
     "How is 'long' data different from 'wide' data?", 
-    answer("Long data has relative more rows, but fewer columns", correct = TRUE),
-    answer("Long data has relative more columns, but fewer rows"),
-    answer("The data set are bigger in size"),
-    answer("They are easier to read by humans"),
-    answer("Wide data can be used as input for modeling and visualization functions"),
+    answer("Long data has relative more rows, but fewer columns.", correct = TRUE),
+    answer("Long data has relative more columns, but fewer rows."),
+    answer("The data set are bigger in size."),
+    answer("They are easier to read by humans."),
+    answer("Wide data can be used as input for modeling and visualization functions."),
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
