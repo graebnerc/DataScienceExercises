@@ -111,11 +111,11 @@ quiz(
   ),
   question(
     'What is the difference between `NULL` and `NA`?',
-    answer('`NULL` denotes and absent vector, `NA` an absent element of a vector.', correct = TRUE),
+    answer('`NULL` denotes an absent vector, `NA` an absent element of a vector.', correct = TRUE),
     answer("`NULL` is relevant in the context of lists, `NA` in the context of atomic vectors."),
     answer("`NA` denotes a missing value, `NULL` can mean 'zero' both in a numeric and character sense."),
     answer('`NA` denotes a vector that is not available (i.e. has no name), `NULL` a vector of length zero.'),
-    answer("`NA` denotes a missing element in a data.frame of a tibble, `NULL` a missing element within a vector."),
+    answer("`NA` denotes a missing element in a data.frame or a tibble, `NULL` a missing element within a vector."),
     allow_retry = TRUE, random_answer_order = TRUE
   )
 )

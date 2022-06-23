@@ -24,8 +24,8 @@ quiz(
   question(
     "What is 'tidy data'?", 
     answer(paste0(
-      "A description of a way to organize data that allows for ",
-      "easy further processing of this data for the sake of ",
+      "Data that is organized in a way that allows for ",
+      "easy further processing for the sake of ",
       "analysis or visualization."), 
       correct = TRUE),
     answer("Data that was collected in a convincing way."),
@@ -58,9 +58,10 @@ quiz(
     "How is 'long' data different from 'wide' data?", 
     answer("Long data has relative more rows, but fewer columns.", correct = TRUE),
     answer("Long data has relative more columns, but fewer rows."),
-    answer("The data set are bigger in size."),
-    answer("They are easier to read by humans."),
-    answer("Wide data can be used as input for modeling and visualization functions."),
+    answer("Long data data sets are bigger in size."),
+    answer("Long data sets are easier to read by humans."),
+    answer(
+      "Only long data sets can be used as input for modeling and visualization functions."),
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```

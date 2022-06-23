@@ -42,7 +42,7 @@ quiz(
                   "(e.g. for the purpose of prediction).")),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(
-    "What do mean by 'sample variation'?", 
+    "What does 'sample variation' mean?", 
     answer(paste0(
       "The fact that different random samples from the same population ",
       "differ from each other."), 

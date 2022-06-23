@@ -48,7 +48,7 @@ quiz(
     allow_retry = TRUE, random_answer_order = TRUE),
   
   question(paste0(
-    "Assuming I want to hide the R code in the final document, but ", 
+    "Assuming I want to hide the R code in the rendered document, but ", 
     "still include the output it produces, which chunk option should I use?"),
     answer("`echo=FALSE`", correct = TRUE),
     answer("`include=FALSE`"),

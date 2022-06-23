@@ -85,7 +85,7 @@ quiz(
   
   question(paste0(
     "When do we speak of a spurious relationship between two variables?"),
-    answer(paste0("If they are correlated with each other, ",
+    answer(paste0("If the two variables are correlated with each other, ",
                   "but there is no causal mechanism connecting them."), 
            correct = TRUE),
     answer(paste0("When there is a causal relationship, which remains ",

@@ -164,12 +164,12 @@ quiz(
       "It increases if you add an additional explanatory variable ",
       "that does not add to the explanatory power of the model.")),
     answer(paste0(
-      "You cannot interpret it as the share of explained variation in the ",
-      "dependent variable."
+      "You cannot interpret it as the share of explained variation in total ",
+      "variation of the dependent variable."
       ), 
       correct = TRUE),
     answer(paste0(
-      "It becomes less precise the more independent variables are considered."
+      "It becomes less precise the more explanatory variables are considered."
       )),
     answer(paste0(
       "It cannot take into account the explanatory power of interaction ",
