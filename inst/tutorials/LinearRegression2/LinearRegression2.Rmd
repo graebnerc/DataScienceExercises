@@ -751,8 +751,8 @@ grade_this({
             "You were asked to construct a scatter plot with a regression ",
             "line, but are missing the points...what geom is missing?"
             )
-          )
-  if(!str_detect(.user_code, "geom_parallel_slopes\\(se = FALSE\\)")){
+          ) 
+  if(!str_detect(str_replace_all(.user_code, "\\s", ""), "geom_parallel_slopes\\(se=FALSE\\)")){
     fail("You are missing the call to 'geom_parallel_slopes(se = FALSE)'!")
   }
   pass()
@@ -762,6 +762,11 @@ grade_this({
 ### The interaction model
 Now extend the model you estimated in the previous exercise to also account for
 interaction effects between the variables `age` and `gender`.
+
+```{r regex-6-setup}
+teaching_evals <- moderndive::evals %>%
+  select(all_of(c("age", "score", "gender")))
+```
 
 ```{r regex-6, exercise=TRUE}
 

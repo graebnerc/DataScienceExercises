@@ -176,19 +176,19 @@ quiz(
     "What would be the correct interpretation for the estimated coefficient of `price_liquor`?", 
     answer(paste0(
       "For every increase of 1 unit in `price_liquor`, ",
-      "there is an associated decrease of, on average, 9.84",
+      "there is an associated decrease of, on average, 7.78",
       " liters of beer consumption."), 
       correct = TRUE),
     answer(paste0(
-      "For every increase of, on average, 9.84 units in `price_liquor`, ",
+      "For every increase of, on average, 7.78 units in `price_liquor`, ",
       "there is an associated decrease of one",
       " liter of beer consumption.")),
     answer(paste0(
       "If `price_liquor` increases by one unit, the beer consumption will, ",
-      "rise by 9.84 litres")),
+      "rise by 7.78 litres")),
     answer(paste0(
       "For every decrease of 1 unit in `price_liquor`, ",
-      "there is an associated decrease of, on average, 9.84",
+      "there is an associated decrease of, on average, 7.78",
       " liters of beer consumption.")), 
     allow_retry = TRUE, random_answer_order = TRUE),
   question(
