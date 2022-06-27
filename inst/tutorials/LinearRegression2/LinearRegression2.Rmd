@@ -867,8 +867,7 @@ quiz(
   question(
     "Which of the following conclusions can you draw from the results?",
     answer("Male teachers tend to receive lower scores than female teachers"),
-    answer("Female teachers tend to receive lower scores than male teachers", 
-           correct = TRUE),
+    answer("Female teachers tend to receive lower scores than male teachers"),
     answer("Older teachers tend to receive lower scores only when they are male"),
     answer("Older teachers tend to receive lower scores but only if they are female"),
     answer(paste("Both male and female teachers tend to receive lower",
