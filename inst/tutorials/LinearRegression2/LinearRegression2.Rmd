@@ -32,10 +32,12 @@ quiz(
       "Can it be that adding a new variable to a regression",
       "equation changes the estimates for the other variable?"),
       answer(
-        paste0("Yes, this is true for all practically relevant cases"), 
+        paste0("Yes, this is true for all practically relevant cases."), 
         correct = TRUE),
-      answer("No, adding a new variable does not change estimates for the other variables"),
-      answer("Sometimes that is the case, sometimes not."),
+      answer("No, adding a new variable does not change estimates for the other variables."),
+      answer("It depends on the particular estimation method."),
+      answer("It depends on the number of observations."),
+      answer("It depends on the total number of variables in the regression equation."),
       allow_retry = TRUE, random_answer_order = TRUE),
   question(
     paste("What is a categorial variable?"),
@@ -49,12 +51,12 @@ quiz(
   question(
     paste("What does 'ceteris paribus' mean?"),
     answer(
-      paste0("All other things held constant"),
+      paste0("All other things held constant."),
       correct = TRUE),
     answer("F*** statistics!"),
-    answer("All variables taken into account"),
-    answer("Including the same effect of other variables"),
-    answer("Not considering other effects"),
+    answer("All variables taken into account."),
+    answer("Including the same effect of other variables."),
+    answer("Not considering other effects."),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(
     paste("What is the 'baseline level' in a regression with a categorial variable?"),
@@ -135,11 +137,12 @@ quiz(
     paste("When should you use a parallel slopes model instead of an interaction model?"),
     answer(
       paste0("When you have strong reason to believe that the effect of the ",
-             "explanatory variable is the same across groups"),
+             "explanatory variable is the same across groups."),
       correct = TRUE),
-    answer("Never, its only useful for paedagogical purposes"),
+    answer("Never, its only useful for paedagogical purposes."),
     answer("When there is no other specification without interaction effects available."),
-    answer("It is generally the better choice because it is more efficient"),
+    answer("It is generally the better choice because it is more efficient."),
+    answer("When the sample size exceeds the parameters to be estimtated by factor 10 or more."),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(paste(
     "What is the main advantage of \\bar{R}^2 over R^2?"),
@@ -157,6 +160,9 @@ quiz(
     answer(paste0(
       "It takes into account the explanatory power of interaction effects ",
       "among explanatory variables."
+      )),
+    answer(paste0(
+      "It is easier to compute."
       )),
     allow_retry = TRUE, random_answer_order = TRUE),
   question(paste("What is the main drawback of $\\bar{R}^2$ as compared to $R^2$?"),
