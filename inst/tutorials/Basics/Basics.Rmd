@@ -10,7 +10,7 @@ library(learnr)
 library(gradethis)
 knitr::opts_chunk$set(echo = FALSE)
 gradethis_setup(
-  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  pass.praise = TRUE, fail.hint = FALSE,
   fail.encourage = TRUE, maybe_code_feedback = FALSE)
 ```
 
