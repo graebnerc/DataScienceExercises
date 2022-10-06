@@ -92,8 +92,8 @@ quiz(
   question(
     'What type will this vector have: c("5", 50, NA)',
     answer('logical'),
-    answer('integer', correct = TRUE),
-    answer('character'),
+    answer('integer'),
+    answer('character', correct = TRUE),
     answer('double'),
     answer('numeric'),
     answer('factor'),
