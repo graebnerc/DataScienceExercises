@@ -1,7 +1,7 @@
 Package: DataScienceExercises
 Type: Package
 Title: Exercises for for course Introduction to Data Science at the EUF
-Version: 0.0.0.9026
+Version: 0.0.0.9027
 Authors@R: 
     person(
       given = "Claudius", 

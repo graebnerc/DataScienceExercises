@@ -1,0 +1,170 @@
+---
+title: "Exercises: Quarto"
+author: "Introduction to data science"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, fail_code_feedback = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## General remarks
+
+* There will be no coding exercises in the exercise sheet; you can find a link 
+to coding exercises in the material section of the course homepage
+* The questions and practical tasks all refer to *Quarto*; for a tutorial 
+on Markdown (that also includes exercises), please use the 
+[CommonMark markdown tutorial](https://commonmark.org/help/tutorial/)
+
+## Content quiz
+
+```{r markdownquiz1}
+quiz(
+  question(
+    "What is true about the relationship between Quarto and R Markdown?",
+    answer("Quarto is meant as the 'next-generation' version of R Markdown.", correct = TRUE),
+    answer("Quarto is meant to substitute R Markdown in the near future"),
+    answer("While R Markdown only supports R for statistical analysis, Quarto supports more languages, such as Julia or Python.", correct = TRUE),
+    answer("Quarto is mainly used for writing text, R Markdown for statistical analysis"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(
+    "What is the specific feature of Quarto that makes it so attractive?", 
+    answer(paste0(
+      "It allows writing documents comprising of both R code for statistical ",
+      "analysis and Markdown code for formatting text."), 
+      correct = TRUE),
+    answer("It allows to create graphics interactively."),
+    answer("It facilitates the writing of texts in LaTeX from within an R project."),
+    answer(paste0(
+      "It makes writing R code easier by providing several useful Addins ", 
+      "for R-Studio that speeed up common coding tasks.")),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question("What is the header of a Quarto document used for?",
+    answer("It specifies general document properties and determines how the document gets rendered",
+           correct = TRUE),
+    answer("It can be used to set the default values for the R chunks used in the document",
+           correct = TRUE),
+    answer("It fixes the meta-data for the rendered documents"),
+    answer("It is used to specify the languages that can be used within the documents"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "Assuming I want to hide the R code in the rendered document, but ", 
+    "still include the output it produces, which chunk option should I use?"),
+    answer("`echo: false`", correct = TRUE),
+    answer("`include: false`"),
+    answer("`echo: true`"),
+    answer("`hide: true`"),
+    answer("`eval: false`"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question("What can you control via the chunk option `include`?",
+    answer("Whether code and output should be printed in the final documents", correct = TRUE),
+    answer("Whether a chunk should be executed during the rendering process"),
+    answer("Whether the output of a chunk should be included in the final documents"),
+    answer("Whether the objects defined in the chunk should remain in the working environment"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  
+  question(paste0(
+    "When you render a Quarto document, the working directoy used " ,
+    "to evaluate relative paths is..."),
+    answer("The location of the `.qmd`-file.", correct = TRUE),
+    answer("The location of the `.Rproj`-file."),
+    answer("The root directory of your computer."),
+    answer("The working directory of the current R project."),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+Consider the following header:
+
+```
+title: "Test Markdown"
+author: "Claudius"
+format: 
+  html: 
+    toc: true
+    toc-depth: 2
+    toc-location: body
+    number-sections: true
+    theme: darkly
+  pdf:
+    number-sections: true
+```
+
+```{r markdownquiz2}
+quiz(
+  question(
+    "Will the rendered document feature a table of contents?",
+    answer("Only if you produce an html file", correct = TRUE),
+    answer("Yes"),
+    answer("No"),
+    answer("Only if the document is published as a Netlify webpage"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("What is the effect of `number-sections: true`?",
+    answer("Section headings are numbered", correct = TRUE),
+    answer("Section headings can contain numbers"),
+    answer("You can allow to use any number of sections you like"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("What is the effect of `theme: darkly`?",
+    answer(paste0("It changes the overall appearence of the resulting file ",
+                  "according to a Quarto-theme"), correct = TRUE),
+    answer("It chooses a combination of fonts that give a dark appearance"),
+    answer("It darkens your code in the resulting html file"),
+    answer("It chooses a dark color-coding of the code for your editor"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+Consider the following two chunk options:
+
+A)
+```
+{r, label="make-plot", echo=FALSE, fig.with=8, fig.height=6, warning=FALSE, fig.cap="A nice plot"}
+```
+
+B)
+
+```
+{r}
+#| label: make-plot
+#| echo: false
+#| fig-width: 8
+#| fig-height: 6
+#| warning: false
+#| fig-cap: "A nice plot"
+```
+
+*Note: if you have trouble with the second question, check* 
+[this page](https://quarto.org/docs/reference/cells/cells-knitr.html)*.*
+
+```{r markdownquiz3}
+quiz(
+  question(
+    "What is true about their relationship?",
+    answer("They have equivalent effects, but the second option is newer and should be preferred", correct = TRUE),
+    answer("They have equivalent effects, but the first option is newer and should be preferred"),
+    answer("The first only applies to the chunk in question, the second applied globally"),
+    answer("The first one works in R Markdown, the second in Quarto"),
+    answer("They intend to achieve the same, but the second one does not work because one must use boolean values (`TRUE` instead of `true`)."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("What are the effects of the chunk options chosen?",
+    answer("The chunk output can be referred to via the label 'make-plot'", correct = TRUE),
+    answer("The code is not shown in the rendered output, only the results", correct = TRUE),
+    answer("The results produced by the code are supressed in the rendered output, but the code itself is shown"),
+    answer("The produced figures are 8cm wide and 6cm high"),
+    answer("The produced figures are 8 inches wide and 6 inches high", correct = TRUE),
+    answer("The produced figures will be accompanied by a caption ('A nice plot)'", correct = TRUE),
+    answer("Any warnings produced during code execution will not be shown in the rendered document", correct = TRUE),
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
