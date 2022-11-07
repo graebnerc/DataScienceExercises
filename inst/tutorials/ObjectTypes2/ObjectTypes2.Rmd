@@ -521,8 +521,8 @@ tib_1[["vec_1"]]
 ```{r ex-fac8-check}
 grade_this({
   fail_if(
-    stringr::str_detect(.user_code, '\\["') | 
-      stringr::str_detect(.user_code, '\\[2'),
+    stringr::str_starts(.user_code, 'tib_1\\["') | 
+      stringr::str_starts(.user_code, 'tib_1\\[2'),
     message = paste0(
       "Remember the two ways you can extract an element from the tibble ",
       "using square brackets. You chose the wrong one!"
