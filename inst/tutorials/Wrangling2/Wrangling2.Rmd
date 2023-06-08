@@ -1,0 +1,1556 @@
+---
+title: "Data wrangling II"
+author: "Applied Data Science with R"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(scales)
+library(gradethis)
+library(dplyr)
+library(tidyr)
+library(data.table)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE, 
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+```
+
+## General remarks
+
+This exercise session is meant to give you the opportunity to practice your
+skills in the context of data preparation. The focus will be on data wrangling,
+i.e. the transformation of wide and long data sets.
+
+For the following exercises, assume that your project has the following 
+directory structure with all data sets being located directly within the
+folder `data`, and you are working from within the script `myscript.R`:
+
+```
+Exercises
+│   Exercises.Rproj    
+│
+└───data
+│   │   education.csv
+│   │   poverty_gdp_countries.csv
+│   │   poverty_gdp_regions.csv
+|   |   renewables_electricity.csv
+└───R
+    │   myscript.R
+```
+
+**Attention:** Due to the way these exercises were created you cannot use
+the function `here()`, as you would usually do. Thus, use relative paths from
+the project main directory, i.e. the paths you would normally pass to the 
+function `here()`.
+
+Also, in the following exercises, please make sure that you return your final data
+set, otherwise your solution cannot be evaluated. This means the the following
+does not work:
+
+```{r, eval=FALSE, echo=TRUE}
+my_solution <- data.frame("a"=1:2, "b"=3:4)
+```
+
+Instead, write:
+
+```{r, eval=FALSE, echo=TRUE}
+my_solution <- data.frame("a"=1:2, "b"=3:4)
+my_solution
+```
+
+Or:
+
+```{r, eval=FALSE, echo=TRUE}
+data.frame("a"=1:2, "b"=3:4)
+```
+
+Finally, whenever your final solution contains a column with years, please 
+make sure this column is called `years`, otherwise the automated feedback
+does not work.
+
+## Wide and long data I
+
+*Note*: assume that your project has the following 
+directory structure with all data sets being located directly within the
+folder `data`, and you are working from within the script `myscript.R`:
+
+```
+Exercises
+│   Exercises.Rproj    
+│
+└───data
+│   │   education.csv
+│   │   poverty_gdp_countries.csv
+│   │   poverty_gdp_regions.csv
+|   |   renewables_electricity.csv
+└───R
+    │   myscript.R
+```
+
+Import the data set `poverty_gdp_regions.csv` and make it tidy. Make sure it
+is saved as a `tibble.`
+
+```{r ex-wrang2-1, exercise=TRUE}
+
+```
+
+
+```{r ex-wrang2-1-hint-1}
+data_raw <- data.table::____(____) 
+
+data_tidy <- tibble::____(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-2}
+data_raw <- data.table::____(
+  file = ____, 
+  ____ = ___) 
+
+data_tidy <- tibble::____(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-3}
+data_raw <- data.table::fread(
+  file = ____, 
+  ____ = ___) 
+
+data_tidy <- tibble::____(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-4}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  ____ = ___) 
+
+data_tidy <- tibble::____(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-5}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  ____ = TRUE) 
+
+data_tidy <- tibble::____(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-6}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::____(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-7}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  ____(____
+       ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-8}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::____(____
+       ) %>% 
+  tidyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-9}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(____
+       ) %>% 
+  tidyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-10}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(____
+       ) %>% 
+  tidyr::pivot_wider(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-11}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = ____,
+    names_to = ____,
+    values_to = ____
+    ) %>% 
+  tidyr::pivot_wider(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-12}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "Indicator"), 
+    names_to = ____,
+    values_to = ____
+    ) %>% 
+  tidyr::pivot_wider(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-13}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  tidyr::pivot_wider(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-14}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = ____, 
+    values_from = ____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-hint-15}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv", 
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = ____)
+
+data_tidy
+```
+
+```{r ex-wrang2-1-solution}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = "value")
+
+data_tidy
+```
+
+
+```{r ex-wrang2-1-check}
+wrang_2_1_sol <- data.table::fread(
+  file = "data/poverty_gdp_regions.csv",
+  header = TRUE) %>% 
+  tibble::as_tibble() %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = "value")
+
+grader <- grade_this({
+  
+  if ( stringr::str_detect(.user_code, "here\\(")){
+    fail(message = paste0(
+      "Your code should not use the function `here::here()`, although ",
+      "you should usually use this function. But for the sake of this ",
+      "exercise simply use the relative paths you would usually have ",
+      "passed to `here::here()`.")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "fread") ){
+   fail(message = paste0(
+      "You need to use the function `fread()` from the package ",
+      "`data.table` to import the data!")
+    )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "header") ){
+      fail(message = paste0(
+        "Have a look at the raw data. For data as this you need to ",
+        "use the argument `header` in `data.table::fread()`!")
+        )
+    }
+  
+  if ( !stringr::str_detect(.user_code, "pivot_longer") ){
+      fail(message = paste0(
+        "When making this data tidy, at some point you need to make ",
+        "it longer using the respective function from the package ",
+        "`tidyr`!")
+        )
+    }
+  
+  if ( !stringr::str_detect(.user_code, "pivot_wider")){
+    fail(message = paste0(
+      "When making this data tidy, at some point you need to make ",
+      "it wider using the respective function from the package ",
+      "`tidyr`!")
+      )
+  }
+  
+  if ( !tibble::is_tibble(.result)){
+    fail(message = paste0(
+      "Your solution is not a tibble. Did you forget to return it? Or ",
+      "did you forget to transform the imported data into a `tibble`? ",
+      "The package `tibble` contains a function with which you can ",
+      "transform data frames into a `tibble`!")
+    )
+  }
+  
+  if (identical(.result, wrang_2_1_sol)){
+    pass()
+  }
+
+  fail()
+})
+```
+
+## Wide and long data II
+
+*Note*: assume that your project has the following 
+directory structure with all data sets being located directly within the
+folder `data`, and you are working from within the script `myscript.R`:
+
+```
+Exercises
+│   Exercises.Rproj    
+│
+└───data
+│   │   education.csv
+│   │   poverty_gdp_countries.csv
+│   │   poverty_gdp_regions.csv
+|   |   renewables_electricity.csv
+└───R
+    │   myscript.R
+```
+
+Import the data set `poverty_gdp_countries.csv`. 
+Make the data set tidy and consider only the observations after 2000 and 
+countries from Latin America and the Caribbean.
+Make sure it is saved as a `tibble` and does not contain columns that only
+have one unique value.
+
+```{r ex-wrang2-2, exercise=TRUE}
+
+```
+
+```{r ex-wrang2-2-hint-1}
+data_raw <- ____(____) 
+
+data_tidy <- ____(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-2}
+data_raw <- data.table::fread(____) 
+
+data_tidy <- ____(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-3}
+data_raw <- data.table::fread(
+  file = ,
+   = TRUE) 
+
+data_tidy <- ____(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-4}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- ____(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-5}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-6}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-7}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(____) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-8}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(____) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-9}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = ____, 
+    names_to = ____, 
+    values_to = ____
+  ) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-10}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-11}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::filter(____) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-12}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::____(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-13}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::pivot_wider(____) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-14}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = ____, 
+    values_from = ____
+  ) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-15}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = "value"
+  ) %>% 
+  dplyr::____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-hint-16}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+  ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = "value"
+  ) %>% 
+  dplyr::select(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-solution}
+data_raw <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) 
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = "value"
+    ) %>% 
+  dplyr::select(-region)
+
+data_tidy
+```
+
+```{r ex-wrang2-2-check}
+wrang_2_2_sol <- data.table::fread(
+  file = "data/poverty_gdp_countries.csv",
+  header = TRUE) %>% 
+  tibble::as_tibble(.) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "region", "Indicator"), 
+    names_to = "year", 
+    values_to = "value"
+    ) %>% 
+  dplyr::filter(
+    year>=2000,
+    region == "Latin America & Caribbean"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "Indicator", 
+    values_from = "value") %>% 
+  dplyr::select(-region)
+
+grader <- grade_this({
+  
+  if ( stringr::str_detect(.user_code, "here\\(")){
+    fail(message = paste0(
+      "Your code should not use the function `here::here()`, although ",
+      "you should usually use this function. But for the sake of this ",
+      "exercise simply use the relative paths you would usually have ",
+      "passed to `here::here()`.")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "fread") ){
+   fail(message = paste0(
+      "You need to use the function `fread()` from the package ",
+      "`data.table` to import the data!")
+    )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "header") ){
+      fail(message = paste0(
+        "Have a look at the raw data. For data as this you need to ",
+        "use the argument `header` in `data.table::fread()`!")
+        )
+    }
+  
+  if ( !stringr::str_detect(.user_code, "pivot_longer") ){
+      fail(message = paste0(
+        "When making this data tidy, at some point you need to make ",
+        "it longer using the respective function from the package ",
+        "`tidyr`!")
+        )
+    }
+  
+  if ( !stringr::str_detect(.user_code, "pivot_wider")){
+    fail(message = paste0(
+      "When making this data tidy, at some point you need to make ",
+      "it wider using the respective function from the package ",
+      "`tidyr`!")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "filter") ){
+      fail(message = paste0(
+        "You need to filter the data with the right function from the ",
+        "package `dplyr`!")
+        )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "select") ){
+      fail(message = paste0(
+        "You need to remove columns that only contain a single unique ",
+        "value. You can use the function `unique` to search these ",
+        "columns, and remove them using `dplyr::select()`!")
+        )
+  }
+  
+  if ( "region" %in%  names(.result) ){
+      fail(message = paste0(
+        "Your result contains the colums `region`, but you were asked to ",
+        "keep only countries from the region 'Latin America & Caribbean. ",
+        "Thus, this column becomes superflouus. ",
+        "You can remove it using `dplyr::select()`!")
+        )
+  }
+  
+  if ( !tibble::is_tibble(.result)){
+    fail(message = paste0(
+      "Your solution is not a tibble. Did you forget to return it? Or ",
+      "did you forget to transform the imported data into a `tibble`? ",
+      "The package `tibble` contains a function with which you can ",
+      "transform data frames into a `tibble`!")
+    )
+  }
+  
+  if (identical(.result, wrang_2_2_sol)){
+    pass()
+  }
+
+  fail()
+})
+```
+
+## Wide and long data III
+
+*Note*: assume that your project has the following 
+directory structure with all data sets being located directly within the
+folder `data`, and you are working from within the script `myscript.R`:
+
+```
+Exercises
+│   Exercises.Rproj    
+│
+└───data
+│   │   education.csv
+│   │   poverty_gdp_countries.csv
+│   │   poverty_gdp_regions.csv
+|   |   renewables_electricity.csv
+└───R
+    │   myscript.R
+```
+
+Import the data set `renewables_electricity.csv`. It contains information
+about the share of electricity created from renewable sources.
+Make it tidy, filter out any missing values, only keep countries from the 
+region 'Europe & Central Asia', and remove all columns that contain only
+one unique value. Also, information about the share of renawable electricity
+should be in a column called `'RenewableElectricity'`.
+Finally, make sure the data is saved as a `tibble` .
+
+```{r ex-wrang2-3, exercise=TRUE}
+
+```
+
+```{r ex-wrang2-3-hint-1}
+data_raw <- ____(____)
+
+data_tidy <- ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-2}
+data_raw <- data.table::fread(____)
+
+data_tidy <- ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-3}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-4}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-5}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-6}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-7}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-8}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    ____ = ____, 
+    ____ = ____, 
+    ____ = ____
+  ) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-9}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = ____, 
+    names_to = ____, 
+    values_to = ____
+  ) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-10}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = ____, 
+    values_to = ____
+  ) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-11}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = ____
+  ) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-12}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+  ) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-13}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+  ) %>% 
+  dplyr::filter(____) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-14}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+  ) %>% 
+  dplyr::filter(
+    region == ____,
+    !____(____)
+  ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-15}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+  ) %>% 
+  dplyr::filter(
+    region == "Europe & Central Asia",
+    !is.na(RenewableElectricity)
+  ) %>% 
+  ____(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-hint-16}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+  ) %>% 
+  dplyr::filter(
+    region == "Europe & Central Asia",
+    !is.na(RenewableElectricity)
+  ) %>% 
+  dplyr::select(____)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-solution}
+data_raw <- data.table::fread(
+  file = "data/renewables_electricity.csv")
+
+data_tidy <- tibble::as_tibble(data_raw) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+    ) %>% 
+  dplyr::filter(
+    region == "Europe & Central Asia",
+    !is.na(RenewableElectricity)
+    ) %>% 
+  dplyr::select(-region)
+
+data_tidy
+```
+
+```{r ex-wrang2-3-check}
+wrang_2_3_sol <- data.table::fread(
+  file = "data/renewables_electricity.csv") %>% 
+  tibble::as_tibble(.) %>% 
+  tidyr::pivot_longer(
+    cols = -c("country", "year"), 
+    names_to = "region", 
+    values_to = "RenewableElectricity"
+    ) %>% 
+  dplyr::filter(
+    region == "Europe & Central Asia",
+    !is.na(RenewableElectricity)
+    ) %>% 
+  dplyr::select(-region)
+
+grader <- grade_this({
+  
+  if ( stringr::str_detect(.user_code, "here\\(")){
+    fail(message = paste0(
+      "Your code should not use the function `here::here()`, although ",
+      "you should usually use this function. But for the sake of this ",
+      "exercise simply use the relative paths you would usually have ",
+      "passed to `here::here()`.")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "fread") ){
+   fail(message = paste0(
+      "You need to use the function `fread()` from the package ",
+      "`data.table` to import the data!")
+    )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "pivot_longer") ){
+      fail(message = paste0(
+        "When making this data tidy, at some point you need to make ",
+        "it longer using the respective function from the package ",
+        "`tidyr`!")
+        )
+    }
+  
+  if ( !stringr::str_detect(.user_code, "filter") ){
+      fail(message = paste0(
+        "You need to filter the data with the right function from the ",
+        "package `dplyr`!")
+        )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "select") ){
+      fail(message = paste0(
+        "You need to remove columns that only contain a single unique ",
+        "value. You can use the function `unique` to search these ",
+        "columns, and remove them using `dplyr::select()`!")
+        )
+  }
+  
+  if ( !"RenewableElectricity" %in%  names(.result) ){
+      fail(message = paste0(
+        "You were asked to save the information about the share of electricity ",
+        "in a column called `RenewableElectricity`. You might use ",
+        "dplyr::rename() or set the right name when using tidyr::pivot_longer()!")
+        )
+  }
+  
+  if ( "region" %in%  names(.result) ){
+      fail(message = paste0(
+        "Your result contains the colums `region`, but you were asked to ",
+        "keep only countries from the region 'Latin America & Caribbean. ",
+        "Thus, this column becomes superflouus. ",
+        "You can remove it using `dplyr::select()`!")
+        )
+  }
+
+  if ( sum(is.na(.result))>0 ){
+      fail(message = paste0(
+        "You still need to filter out missing values. Use `is.na()` ",
+        "within `dplyr::filter()` to do so!")
+        )
+  }
+  if ( !tibble::is_tibble(.result)){
+    fail(message = paste0(
+      "Your solution is not a tibble. Did you forget to return it? Or ",
+      "did you forget to transform the imported data into a `tibble`? ",
+      "The package `tibble` contains a function with which you can ",
+      "transform data frames into a `tibble`!")
+    )
+  }
+  
+  if (identical(.result, wrang_2_3_sol)){
+    pass()
+  }
+
+  fail()
+})
+```
+
+
+## Wide and long data IV
+
+*Note*: assume that your project has the following 
+directory structure with all data sets being located directly within the
+folder `data`, and you are working from within the script `myscript.R`:
+
+```
+Exercises
+│   Exercises.Rproj    
+│
+└───data
+│   │   education.csv
+│   │   poverty_gdp_countries.csv
+│   │   poverty_gdp_regions.csv
+|   |   renewables_electricity.csv
+└───R
+    │   myscript.R
+```
+
+Import the data set `education.csv` and compute average values for the period 
+after 2000 for the different regions. Then make sure the resulting data set is 
+saved as a `tibble` and each region has its own column.
+
+*Note:* This means you are not asked to return a tidy data set!
+
+```{r ex-wrang2-4, exercise=TRUE}
+
+```
+
+```{r ex-wrang2-4-hint-1}
+data_raw <- ____(____)
+
+data_final <- ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-2}
+data_raw <- data.table::fread(____)
+
+data_final <- ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-3}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- ____(____) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-4}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::____(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-5}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  ____(____) %>% 
+  ____(____) %>% 
+  ____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-6}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::____(____) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-7}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(____) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-8}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::____(____) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-9}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(____) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-10}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=____(____), 
+    ____ = c("region", "Indicator")
+  ) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-11}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    ____ = c("region", "Indicator")
+  ) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-12}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    .by = c("region", "Indicator")
+  ) %>% 
+  tidyr::____(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-13}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    .by = c("region", "Indicator")
+  ) %>% 
+  tidyr::pivot_wider(____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-14}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    .by = c("region", "Indicator")
+  ) %>% 
+  tidyr::pivot_wider(
+    names_from = ____, 
+    values_from = ____)
+
+data_final
+```
+
+```{r ex-wrang2-4-hint-15}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    .by = c("region", "Indicator")
+  ) %>% 
+  tidyr::pivot_wider(
+    names_from = "region", 
+    values_from = ____)
+
+data_final
+```
+
+```{r ex-wrang2-4-solution}
+data_raw <- data.table::fread(
+  file = "data/education.csv")
+
+data_final <- tibble::as_tibble(data_raw) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    .by = c("region", "Indicator")
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "region", 
+    values_from = "Value")
+
+data_final
+```
+
+```{r ex-wrang2-4-check}
+wrang_2_4_sol <- data.table::fread(
+  file = "data/education.csv") %>% 
+  tibble::as_tibble(.) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::summarise(
+    Value=mean(Value), 
+    .by = c("region", "Indicator")
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "region", 
+    values_from = "Value")
+
+wrang_2_4_sol_alt <- data.table::fread(
+  file = "data/education.csv") %>% 
+  tibble::as_tibble(.) %>% 
+  dplyr::filter(year>=2000) %>% 
+  dplyr::group_by(region, Indicator) %>% 
+  dplyr::summarise(
+    Value=mean(Value), .groups = "drop"
+    ) %>% 
+  tidyr::pivot_wider(
+    names_from = "region", 
+    values_from = "Value")
+
+
+grader <- grade_this({
+  
+  if ( stringr::str_detect(.user_code, "here\\(")){
+    fail(message = paste0(
+      "Your code should not use the function `here::here()`, although ",
+      "you should usually use this function. But for the sake of this ",
+      "exercise simply use the relative paths you would usually have ",
+      "passed to `here::here()`.")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "fread") ){
+   fail(message = paste0(
+      "You need to use the function `fread()` from the package ",
+      "`data.table` to import the data!")
+    )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "filter") ){
+      fail(message = paste0(
+        "You need to filter the data with the right function from the ",
+        "package `dplyr`!")
+        )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "summari") ){
+      fail(message = paste0(
+        "You need to summarize the data with the right function from the ",
+        "package `dplyr`!")
+        )
+  }
+  
+  if ( !(stringr::str_detect(.user_code, "\\.by") | stringr::str_detect(.user_code, "group_by")) ){
+      fail(message = paste0(
+        "You need to group the data when summarizing it. You can use ",
+        "`dplyr::group_by()` or the `.by` argument in `dplyr::summarize()`.")
+        )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "pivot_wider")){
+    fail(message = paste0(
+      "When making this data tidy, at some point you need to make ",
+      "it wider using the respective function from the package ",
+      "`tidyr`!")
+      )
+  }
+  
+  if (dplyr::is_grouped_df(.result) ){
+    fail(message = paste0(
+      "Your final data is still grouped. You need to ungroup it!")
+      )
+  }
+
+  if ( !tibble::is_tibble(.result)){
+    fail(message = paste0(
+      "Your solution is not a tibble. Did you forget to return it? Or ",
+      "did you forget to transform the imported data into a `tibble`? ",
+      "The package `tibble` contains a function with which you can ",
+      "transform data frames into a `tibble`!")
+    )
+  }
+  
+  if ( identical(.result, wrang_2_4_sol) | identical(.result, wrang_2_4_sol_alt) ){
+    pass()
+  }
+
+  fail()
+})
+```
