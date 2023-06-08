@@ -312,10 +312,6 @@ the function `here()`, as you would usually do. Thus, use relative paths from
 the project main directory, i.e. the paths you would normally pass to the 
 function `here()`.
 
-https://rstudio.github.io/learnr/articles/exercises.html
-
-Mit Datensätzen, die du in dem Slides Projekt erstellt hast
-
 **Import the file `growth_data_1.csv`, assign to the resulting object the, **
 **name `growth_data`, transform it into a `tibble`, and call the object by** 
 **its name. The file looks like this:**
@@ -467,7 +463,6 @@ grade_this({
               "transform data frames into a `tibble`!"
               )
           )
-  print(.user_code)
   fail_if(!stringr::str_detect(.user_code, "fread"), 
             message = paste0(
               "You need to use the function `fread()` from the package ",
