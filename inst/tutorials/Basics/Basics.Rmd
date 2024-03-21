@@ -197,11 +197,11 @@ g &= f^3
 
 <div id="ex-chained-full-hint">
 **Hint:** After assigning an intermediate result to a name you can call it 
-via this name in the next calculation step. And dont forget to call the final
+via this name in the next calculation step. And don't forget to call the final
 result in the last line!
 </div>
 
-```{r ex-chained-full-check}
+```{r ex-chained-full-solution}
 a_ <- 10 + 25
 b_ <- a_ * 40
 c_ <- b_ - 100
@@ -209,7 +209,10 @@ d_ <- c_ * 3
 e_ <- sqrt(d_)
 f_ <- e_ / 1000
 g_ <- f_^3
+g_
+```
 
+```{r ex-chained-full-check}
 grade_result(
   pass_if(~identical(.result, g_))
 )
