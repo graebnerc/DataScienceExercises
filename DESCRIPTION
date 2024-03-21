@@ -21,7 +21,8 @@ Imports:
     gradethis (>= 0.2.14),
     htmltools (>= 0.5.7),
     learnr (>= 0.11.5),
-    stringr (>= 1.5.1)
+    stringr (>= 1.5.1),
+    WDI (>= 2.7.8)
 Depends: 
     R (>= 3.50)
 RoxygenNote: 7.1.2
