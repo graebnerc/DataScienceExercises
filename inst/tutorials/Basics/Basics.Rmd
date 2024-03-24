@@ -46,7 +46,8 @@ quiz(
   ),
   question(
     "What can you do to remove all object-name assignment in your current R session?",
-    answer("Restart the R session!"),
+    answer("Restart the R session!", 
+           correct = TRUE),
     answer("Call `rm(name)` for each assignment.", 
            correct = TRUE),
     answer("Click on the broom in the upper right environment panel in R-Studio", 
