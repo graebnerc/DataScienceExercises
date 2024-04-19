@@ -1,6 +1,6 @@
 ---
-title: "Exercises 3: Object types - factors and data frames"
-author: "Introduction to data science: session 4"
+title: "Object types - factors and data frames"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

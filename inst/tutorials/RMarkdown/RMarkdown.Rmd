@@ -1,6 +1,6 @@
 ---
-title: "Exercises 6: R Markdown"
-author: "Introduction to data science: session 9"
+title: "R Markdown"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

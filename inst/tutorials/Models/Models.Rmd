@@ -1,6 +1,6 @@
 ---
-title: "Exercises 8: the philosophy of models"
-author: "Introduction to data science: session 10"
+title: "The philosophy of models"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

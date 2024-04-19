@@ -1,6 +1,6 @@
 ---
-title: "Exercises 4: Visualization I"
-author: "Introduction to data science: session 5"
+title: "Visualization I"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

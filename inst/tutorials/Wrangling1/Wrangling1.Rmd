@@ -1,6 +1,6 @@
 ---
-title: "Exercises 5: Data wrangling I"
-author: "Introduction to data science: session 8"
+title: "Data wrangling I"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

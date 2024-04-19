@@ -1,6 +1,6 @@
 ---
-title: "Exercises 10: Multiple Linear Regresssion"
-author: "Introduction to data science: session 12 & 13"
+title: "Multiple Linear Regresssion"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

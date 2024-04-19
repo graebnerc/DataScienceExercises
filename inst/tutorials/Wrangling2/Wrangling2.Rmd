@@ -1,6 +1,6 @@
 ---
 title: "Data wrangling II"
-author: "Applied Data Science with R"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

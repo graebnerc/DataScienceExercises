@@ -1,6 +1,6 @@
 ---
-title: "Exercises 11: Sampling"
-author: "Introduction to data science: session 14"
+title: "Sampling"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

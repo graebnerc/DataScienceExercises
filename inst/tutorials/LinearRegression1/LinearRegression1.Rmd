@@ -1,6 +1,6 @@
 ---
-title: "Exercises 9: Simple Linear Regresssion"
-author: "Introduction to data science: session 11"
+title: "Simple Linear Regresssion"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

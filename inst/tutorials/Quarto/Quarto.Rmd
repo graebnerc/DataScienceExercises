@@ -1,6 +1,6 @@
 ---
 title: "Exercises: Quarto"
-author: "Introduction to data science"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---

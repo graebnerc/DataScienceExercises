@@ -1,6 +1,6 @@
 ---
 title: "Project organization and data import"
-author: "Introduction to data science: session 6"
+author: "Claudius Gräbner-Radkowitsch"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
