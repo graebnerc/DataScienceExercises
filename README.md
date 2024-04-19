@@ -1,10 +1,12 @@
-# 'An introduction to data science in R' - Exercises
+# Exercises for using R for data science
 
-This package contains exercises accompanying the course
-'An introduction to data science in R' taught by Claudius Gräbner-Radkowitsch
-in the spring semester 2022 at the Europa University Flensburg.
+This package contains exercises for getting started with the programming 
+language R. They were designed to align with the courses I am teaching at the 
+Europa-University Flensburg 
+(such as [this one](https://datascience-euf-spring24.netlify.app/)),
+but the material they cover is most likely part of many introductions to R.
 
-You should install this package via 
+You can install this package via 
 
 ```
 remotes::install_github(repo = "graebnerc/DataScienceExercises")
@@ -19,14 +21,35 @@ learnr::run_tutorial(
   shiny_args=list("launch.browser"=TRUE))
 ```
 
-You get information about the relevant names of the exercises via the course
-homepage. The first exercise sheet, for instance, is called "Basics" and is
+The first exercise collection, for instance, is called "Basics" and is
 called by:
 
 ```
 learnr::run_tutorial(
   name = "Basics", 
   package = "DataScienceExercises", 
-  shiny_args=list("launch.browser"=TRUE))```
+  shiny_args=list("launch.browser"=TRUE))
+```
+
+Here is a list of the exercises currently available:
+
+| **Exercise code**  | **Description**                                                                        |
+|:-------------------|:---------------------------------------------------------------------------------------|
+| Basics             | Exercises on how to conduct basic tasks in R                                           |
+| Functions          | Exercises on how to define your own functions                                          |
+| ObjectTypes1       | Exercises on how to handle basic object types                                          |
+| ObjectTypes2       | Exercises on how to use advanced object types, such as data frames, tibbles or factors |
+| Visualization1     | Building plots using ggplot2                                                           |
+| ProjectOrga        | How to set up an R project, use the here function, and how to import data              |
+| RMarkdown          | An older version that contains some exercises on R Markdown                            |
+| Quarto             | A newer version that contains some exercises on Quarto                                 |
+| Wrangling1         | The basics of manipulating and reshaping data frames                                   |
+| Wrangling2         | More exercises on making data wider or longer                                          |
+| LinearRegression1  | Basics of linear regression models                                                     |
+| LinearRegression2  | More advanced applications for linear regression models                                |
+| Sampling           | Simulating random processes and conduct Monte Carlo simulations                        |
+| Models             | Multiple choice questions on the theory of models                                      |
+|                    |                                                                                        |
+
 
 For bug reports and feedback please use the Github issue tracker.
