@@ -1,0 +1,558 @@
+---
+title: "Basics in R: Functions"
+author: "Claudius Gräbner-Radkowitsch"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+knitr::opts_chunk$set(echo = FALSE)
+gradethis_setup(
+  pass.praise = TRUE, fail.hint = FALSE,
+  fail.encourage = TRUE, maybe_code_feedback = FALSE)
+tutorial_options(exercise.blanks = "____")
+```
+
+# Functions
+
+## Content quiz
+
+```{r functionquiz}
+quiz(
+  question(
+    "Which of the following statements about functions in R is/are correct?",
+    answer("Functions apply a certain routine on an input, thereby producing (almost always) an output.", correct=TRUE),
+    answer("Are the R equivalent to mathematical functions and map numbers from one mathematical space into another."),
+    answer("Functions facilitate the debugging of your code, especially if they encapsulate routines that use multiple times.", correct=TRUE),
+    answer("Functions are difficult to define for yourself, so you should mainly use pre-defined functions and avoid user-written functions whenever possible."),
+    answer("As a rule of thumb, whenever you use some code more than twice, you should encapsulate it into a function.", correct=TRUE), 
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "What do we need optional arguments for?",
+    answer("They represent the input to a function and are, thus, necessary for the function to produce an output."),
+    answer("They usually help us to adjust the routine implemented in the function to the particular case at hand.", correct=TRUE),
+    answer("These kind of arguments are unnecessary. Since they are optional its safe to ignore them until you become a more experienced programmer."),
+    answer("All arguments to functions are optional in the strict sense, so there is nothing special about them."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+  ),
+  question(
+    "Consider the function `sum()`. What is its main argument?",
+    answer("An arbitrary number of numeric or logical atomic vectors", correct=TRUE),
+    answer("A single vector containing numerical elements that the function can sum up."),
+    answer("A logical vector named `na.rm`, indicating whether the function should ignore missing values when suming up a vector."),
+    answer("The name of the vector of which you want to sum up the elements."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    "Consider the function `sum()`. What is its optional argument?",
+    answer("A logical vector named `na.rm`, indicating whether the function should ignore missing values when suming up a vector.", correct=TRUE),
+    answer("The name of the vector of which you want to sum up the elements."),
+    answer("A single vector containing numerical elements that the function can sum up."),
+    answer("The function `sum()` has no optional arguments."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    "Only optional arguments can be specified by name. Is this true?",
+    answer("No, you can also specify mandatory arguments by name, but this is not necessary.", correct=TRUE),
+    answer("Yes, mandatory arguments have no name and must be entered in the sequence they are mentioned in the function definition."),
+    answer("No, in fact only mandatory arguments can be specified by name, optional arguments are specified by position."),
+    answer("Yes, the name of mandatory arguments is only used for documentation purposes."), 
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    "Variables that are defined within the function body...",
+    answer("disappear after the function has been called.", correct=TRUE),
+    answer("remain available after calling the function and can be used to check intermediate results."),
+    answer("disappear by default, but can be kept if the universal optional argument `keep_int_vars` is set to `TRUE`."), 
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+## Coding exercises I: defining basic functions
+
+### Simple addition
+
+Define a function called `man_add` that formalizes the equation $f(x,y)=x+y$, 
+Thus, the function takes two mandatory
+arguments and adds them up. 
+
+Test your function for the values $x=2$ and $y=4$.
+
+```{r ex-defadd, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-defadd-hint-1}
+man_add <- function(x, y){
+  # function body
+}
+man_add(____)
+```
+
+```{r ex-defadd-hint-2}
+man_add <- function(x, y){
+  result <- ____ + ____
+  return(result)
+}
+man_add(____)
+```
+
+```{r ex-defadd-hint-3}
+man_add <- function(x, y){
+  result <- ____ + ____
+  return(result)
+}
+man_add(x = 2, y = 4)
+```
+
+```{r ex-defadd-hint-4}
+man_add <- function(x, y){
+  result <- x + ____
+  return(result)
+}
+man_add(x = 2, y = 4)
+```
+
+```{r ex-defadd-solution}
+man_add <- function(x, y){
+  result <- x + y
+  return(result)
+}
+man_add(x = 2, y = 4)
+```
+
+```{r ex-defadd-check}
+grader <- grade_this({
+  print(.user_code)
+  if ( !stringr::str_detect(.user_code, "function\\(")){
+    fail(message = paste0(
+      "You need to use the function `function()` to define a new function.")
+      )
+  }
+
+  if ( !stringr::str_detect(.user_code, "man_add\\(")){
+    fail(message = paste0(
+      "You should define and use a function called 'man_add'.")
+      )
+  }
+  
+  if ( !is.double(.result)){
+    fail(message = paste0(
+      "Your solution is not a number, did you forget to call your function or ",
+      "to make sure it returns its result?")
+    )
+  }
+  
+  if (identical(.result, 2+4)){
+    pass()
+  }
+
+  fail()
+})
+```
+
+### A funny function
+
+Write a function `funny` that takes as an input two numbers, $x$ and $y$, and
+then return $\left(x+y\right)^2$ times the string "Ha". For example, for
+$x=2$ and $y=2$, the function should return `"HaHaHaHa"`. 
+
+> Hint: To turn a vector `c("Ha", "Ha")` into `"Haha"`, you can do: 
+`paste(c("Ha", "Ha"), collapse = "")`
+
+Test your function for $x=4$ and $y=5$!
+
+```{r ex-funny, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-funny-hint-1}
+funny <- function(x, y){
+  # function body
+}
+funny(____)
+```
+
+```{r ex-funny-hint-2}
+funny <- function(x, y){
+  nb_of_has <- ____
+  ha_string <- ____
+  result <- ____
+  return(result)
+}
+funny(____)
+```
+
+```{r ex-funny-hint-3}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- ____
+  result <- ____
+  return(result)
+}
+funny(____)
+```
+
+```{r ex-funny-hint-4}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- rep(____,____)
+  result <- ____
+  return(result)
+}
+funny(____)
+```
+
+```{r ex-funny-hint-5}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- rep("Ha",nb_of_has)
+  result <- ____
+  return(result)
+}
+funny(____)
+```
+
+```{r ex-funny-hint-6}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- rep("Ha",nb_of_has)
+  result <- paste(____, collapse = "")
+  return(result)
+}
+funny(____)
+```
+
+```{r ex-funny-hint-7}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- rep("Ha",nb_of_has)
+  result <- paste(ha_string, collapse = "")
+  return(result)
+}
+funny(____)
+```
+
+```{r ex-funny-hint-8}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- rep("Ha",nb_of_has)
+  result <- paste(ha_string, collapse = "")
+  return(result)
+}
+funny(x = ____, y = ____)
+```
+
+```{r ex-funny-solution}
+funny <- function(x, y){
+  nb_of_has <- (x+y)**2
+  ha_string <- rep("Ha", nb_of_has)
+  result <- paste(ha_string, collapse = "")
+  return(result)
+}
+funny(x = 4, y = 5)
+```
+
+```{r ex-funny-check}
+
+correct_solution <- paste(rep("Ha", 81), collapse = "")
+
+grader <- grade_this({
+  print(.user_code)
+  if ( !stringr::str_detect(.user_code, "function\\(")){
+    fail(message = paste0(
+      "You need to use the function `function()` to define a new function.")
+      )
+  }
+
+  if ( !stringr::str_detect(.user_code, "funny\\(")){
+    fail(message = paste0(
+      "You should define and use a function called 'funny'.")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "paste")){
+    fail(message = paste0(
+      "You must use the function `paste` as suggested in the hint.")
+      )
+  }
+  
+  if (!is.character(.result)){
+    fail(message = paste0(
+      "Your solution is not a character vector, did you forget to call your ",
+      "function or to make sure it returns its result?")
+    )
+  }
+  
+  if (identical(.result, correct_solution)){
+    pass()
+  }
+
+  fail()
+})
+```
+
+
+### Law of gravity
+Newton's law of gravitation describes the force of gravity between two objects, 
+$F$, in terms of a universal constant, $G$, the masses of the two objects, 
+$m_1$ and $m_2$, and the distance between the objects, $r$.
+
+The law of gravitation is given by the following equation:
+
+$$F=G\frac{m_1\cdot m_2}{r} $$
+
+Write a function `gravity`, which computes this equation. Note that $G$ is
+already pre-defined (you can check it by calling `G` in the console). So your
+function requires only three arguments.
+
+Test your function for the case of $m_1=2$, $m_2=5$ and $r=0.5$.
+
+```{r ex-gravity-setup}
+G <- 6.673*(10**(-11))
+```
+
+```{r ex-gravity, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-gravity-hint-1}
+gravity <- function(____, ____, ____){
+  # Function body
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-2}
+gravity <- function(m1, ____, ____){
+  # Function body
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-3}
+gravity <- function(m1, m2, r){
+  # Function body
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-4}
+gravity <- function(m1, m2, r){
+  result <- ____
+  return(result)
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-5}
+gravity <- function(m1, m2, r){
+  result <- G*____*____/____
+  return(result)
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-6}
+gravity <- function(m1, m2, r){
+  result <- G*m1*____/____
+  return(result)
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-7}
+gravity <- function(m1, m2, r){
+  result <- G*m1*m2/____
+  return(result)
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-8}
+gravity <- function(m1, m2, r){
+  result <- G*m1*m2/r
+  return(result)
+}
+gravity(____)
+```
+
+```{r ex-gravity-hint-9}
+gravity <- function(m1, m2, r){
+  result <- G*m1*m2/r
+  return(result)
+}
+gravity(m1 = ____, m2 = ____, r = ____)
+```
+
+```{r ex-gravity-hint-10}
+gravity <- function(m1, m2, r){
+  result <- G*m1*m2/r
+  return(result)
+}
+gravity(m1 = 2, m2 = ____, r = ____)
+```
+
+
+```{r ex-gravity-solution}
+gravity <- function(m1, m2, r){
+  result <- G*m1*m2/r
+  return(result)
+}
+gravity(m1 = 2, m2 = 5, r = 0.5)
+```
+
+
+```{r ex-gravity-check}
+gravity_solution <- function(m1, m2, r){
+  result <- G*m1*m2/r
+  return(result)
+}
+correct_solution <- gravity_solution(m1 = 2, m2 = 5, r = 0.5)
+
+grader <- grade_this({
+  print(.user_code)
+  if ( !stringr::str_detect(.user_code, "function\\(")){
+    fail(message = paste0(
+      "You need to use the function `function()` to define a new function.")
+      )
+  }
+
+  if ( !stringr::str_detect(.user_code, "gravity\\(")){
+    fail(message = paste0(
+      "You should define and use a function called 'gravity'.")
+      )
+  }
+  
+  if ( !stringr::str_detect(.user_code, "G")){
+    fail(message = paste0(
+      "The equation includes the gravitational constant G, which has been ",
+      "pre-defined. You need to use it in your solution!")
+      )
+  }
+  
+  if ( !is.double(.result)){
+    fail(message = paste0(
+      "Your solution is not a number, did you forget to call your function or ",
+      "to make sure it returns its result?")
+    )
+  }
+  
+  if (identical(.result, correct_solution)){
+    pass()
+  }
+
+  fail()
+})
+```
+
+
+## Coding exercises II: defining more complicated functions
+
+Define a function called `my_var_func` that takes a vector of numbers as an input
+and calculates the sample variance. Note that the formula for the variance is:
+
+$$\frac{\sum_i(x_i-\bar{x})^2}{n-1}$$
+
+where $\bar{x}$ is the mean of $x$, and $n$ the number of elements in x.
+Note also that $\bar{x}$ can be computed as `mean(x)` and a sum can be 
+computed using `sum()`.
+
+Test your function by applying it to the pre-defined input `test_vector`.
+
+```{r ex-deffun-setup}
+test_vector <- seq(1, 8, by=0.25)
+```
+
+```{r ex-deffun, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-deffun-hint-1}
+my_var_func <- function(x){
+  # function body
+}
+```
+
+```{r ex-deffun-hint-2}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  # ...
+}
+```
+
+```{r ex-deffun-hint-3}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  # ...
+}
+```
+
+```{r ex-deffun-hint-4}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  squared_dev <- (x - x_mean)**2
+  # ...
+}
+```
+
+```{r ex-deffun-solution}
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  squared_dev <- (x - x_mean)**2
+  x_var <- sum(squared_dev) / (x_len-1)
+  return(x_var)
+}
+```
+
+```{r ex-deffun-check}
+grade_result(
+  pass_if(~identical(.result, var(test_vector)))
+)
+```
+
+Take the function you defined above and document it according to the rules
+that you have read about in the tutorial.
+
+```{r ex-docfun, exercise=TRUE, exercise.lines=8}
+
+```
+
+```{r ex-docfun-hint-1}
+# Each documentation should contain a short title, a short description, the
+# function arguments and the return value.
+```
+
+```{r ex-docfun-hint-2}
+# The documentation of a function must come immediately before the function
+# definition and each line of the documentation starts with `#'`. 
+# In the first line you provide a title, which must not be longer than 80 
+# characetrs.
+
+# Then, after inserting a blank line you describe what the function does in a bit 
+# more detail. Then, you describe each argument by using the decorator `@param` 
+# at the beginning of the lines. Finally, after another blank line, you describe 
+# the output of the function after starting the line with the decorator `@return`.
+```
+
+```{r ex-docfun-solution}
+#' Computes the variance of a vector
+#' 
+#' This function takes a numeric vector as input and computes the sample
+#'  variance. It does not work if missing values are presend.
+#' @param x An atomic vector of type `double` or `integer`
+#' @return The sample variance of `x` as `double`
+my_var_func <- function(x){
+  x_mean <- mean(x)
+  x_len <- length(x)
+  squared_dev <- (x - x_mean)**2
+  x_var <- sum(squared_dev) / (x_len-1)
+  return(x_var)
+}
+```
