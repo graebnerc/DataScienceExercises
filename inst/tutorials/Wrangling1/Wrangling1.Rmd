@@ -327,6 +327,7 @@ grade_this({
             "It turns out to be very useful in practice since it accepts ",
             "column names as characters!")
           )
+  pass_if(identical(sort(names(.result))), sort(names(develop_data_selected)))
   pass_if(identical(.result, develop_data_selected))
   fail()
 })
@@ -787,7 +788,8 @@ head(wine2dine)
 ```
 
 Compute the averages of the three wine 
-properties for white and red wine separately. Your result should be a 
+properties (i.e. "alcohol", "quality", and "residual sugar")
+for white and red wine separately. Your result should be a 
 `tibble` that contains a column `property` indicating the property, and the 
 columns `red` and `white`, which contain the average values for red and 
 white wine, respectively. It should look like this:
@@ -915,7 +917,6 @@ wine2dine %>%
 
 ```{r ex-wrang8-check}
 wine2dine_sol <- wine2dine %>%
-  tidyr::pivot_longer(
     cols = dplyr::all_of(c("alcohol", "quality", "residual sugar")), 
     names_to = "property", 
     values_to = "value") %>%
@@ -933,17 +934,19 @@ grade_this({
                            "`tidyr::pivot_longer()`. Think of how and where ",
                            "it might help you!"))
   
-  fail_if(!stringr::str_detect(.user_code, "group_by"), 
-          message = paste0("The solution is a bit more complex! It must ",
-                           "definitely make use of the function ",
-                           "`dplyr::group_by()`. Think of how and where ",
-                           "it might help you!"))
-  
   fail_if(!(stringr::str_detect(.user_code, "summarise") | 
               stringr::str_detect(.user_code, "summarize")), 
           message = paste0("The solution is a bit more complex! It must ",
                            "definitely make use of the function ",
                            "`dplyr::summarise()`. Think of how and where ",
+                           "it might help you!"))
+  
+    fail_if(!(stringr::str_detect(.user_code, "group_by") | 
+                stringr::str_detect(.user_code, "\\.by")), 
+          message = paste0("The solution is a bit more complex! It must ",
+                           "definitely make use of the function ",
+                           "`dplyr::group_by()` or the argument `.by` ",
+                           "in `dplyr::summarise()`. Think of how and where ",
                            "it might help you!"))
   
   fail_if(!stringr::str_detect(.user_code, "pivot_wider"), 
