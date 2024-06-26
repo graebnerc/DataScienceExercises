@@ -1,10 +1,10 @@
 # Exercises for using R for data science
 
 This package contains exercises for getting started with the programming 
-language R. They were designed to align with the courses I am teaching at the 
+language `R`. They were designed to align with the courses I am teaching at the 
 Europa-University Flensburg 
 (such as [this one](https://datascience-euf-spring24.netlify.app/)),
-but the material they cover is most likely part of many introductions to R.
+but the material they cover is most likely part of many introductions to `R`.
 
 You can install this package via 
 
@@ -40,7 +40,8 @@ Here is a list of the exercises currently available:
 | ObjectTypes1       | Exercises on how to handle basic object types                                          |
 | ObjectTypes2       | Exercises on how to use advanced object types, such as data frames, tibbles or factors |
 | Visualization1     | Building plots using ggplot2                                                           |
-| ProjectOrga        | How to set up an R project, use the here function, and how to import data              |
+| ProjectOrga        | How to set up an R project and use the here function                                   |
+| ProjectOrga        | How to import data, especially csv files using `data.table::fread()                    |
 | RMarkdown          | An older version that contains some exercises on R Markdown                            |
 | Quarto             | A newer version that contains some exercises on Quarto                                 |
 | Wrangling1         | The basics of manipulating and reshaping data frames                                   |
@@ -50,6 +51,5 @@ Here is a list of the exercises currently available:
 | Sampling           | Simulating random processes and conduct Monte Carlo simulations                        |
 | Models             | Multiple choice questions on the theory of models                                      |
 |                    |                                                                                        |
-
 
 For bug reports and feedback please use the Github issue tracker.
