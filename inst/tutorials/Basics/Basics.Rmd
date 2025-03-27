@@ -208,6 +208,6 @@ g_
 
 ```{r ex-chained-full-check}
 grade_result(
-  pass_if(~identical(.result, g_))
+  pass_if(~identical(.result, 0.0002435549))
 )
 ```
