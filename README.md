@@ -41,7 +41,7 @@ Here is a list of the exercises currently available:
 | ObjectTypes2       | Exercises on how to use advanced object types, such as data frames, tibbles or factors |
 | Visualization1     | Building plots using ggplot2                                                           |
 | ProjectOrga        | How to set up an R project and use the here function                                   |
-| ProjectOrga        | How to import data, especially csv files using `data.table::fread()                    |
+| ImportData         | How to import data, especially csv files using `data.table::fread()                    |
 | RMarkdown          | An older version that contains some exercises on R Markdown                            |
 | Quarto             | A newer version that contains some exercises on Quarto                                 |
 | Wrangling1         | The basics of manipulating and reshaping data frames                                   |
