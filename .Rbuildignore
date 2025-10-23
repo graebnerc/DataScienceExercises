@@ -3,4 +3,3 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
-^R/wrangling2_data\.R$
