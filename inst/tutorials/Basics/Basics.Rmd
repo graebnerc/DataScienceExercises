@@ -68,9 +68,9 @@ $$10+25$$
 </div>
 
 ```{r ex-addition-check}
-grade_result(
-  pass_if(~identical(.result, 10+25))
-)
+grade_this({
+  pass_if_equal(10+25, tolerance = 0.0001)  # 0.01% tolerance
+})
 ```
 
 $$50\cdot 2$$
@@ -84,9 +84,9 @@ $$50\cdot 2$$
 </div>
 
 ```{r ex-multiplication-check}
-grade_result(
-  pass_if(~identical(.result, 50*2))
-)
+grade_this({
+  pass_if_equal(50*2, tolerance = 0.0001)  # 0.01% tolerance
+})
 ```
 
 $$\frac{27}{4}$$
@@ -100,9 +100,9 @@ $$\frac{27}{4}$$
 </div>
 
 ```{r ex-division-check}
-grade_result(
-  pass_if(~identical(.result, 27/4))
-)
+grade_this({
+  pass_if_equal(27/4, tolerance = 0.0001)  # 0.01% tolerance
+})
 ```
 
 $$500-650$$
@@ -116,9 +116,9 @@ $$500-650$$
 </div>
 
 ```{r ex-substraction-check}
-grade_result(
-  pass_if(~identical(.result, 500-650))
-)
+grade_this({
+  pass_if_equal(500-650, tolerance = 0.0001)  # 0.01% tolerance
+})
 ```
 
 $$2^4$$
@@ -135,6 +135,8 @@ $$2^4$$
 grade_result(
   pass_if(~identical(.result, 2**4))
 )
+
+
 ```
 
 $$\sqrt{3}\cdot 60$$
@@ -148,9 +150,9 @@ $$\sqrt{3}\cdot 60$$
 </div>
 
 ```{r ex-root-check}
-grade_result(
-  pass_if(~identical(.result, sqrt(3)*60))
-)
+grade_this({
+  pass_if_equal(sqrt(3)*60, tolerance = 0.0001)  # 0.01% tolerance
+})
 ```
 
 $$50 \cdot (4+2)^3$$
@@ -164,9 +166,9 @@ $$50 \cdot (4+2)^3$$
 </div>
 
 ```{r ex-chained-check}
-grade_result(
-  pass_if(~identical(.result, 50*(4+2)**3))
-)
+grade_this({
+  pass_if_equal(50*(4+2)**3, tolerance = 0.0001)  # 0.01% tolerance
+})
 ```
 
 Do the following chain computation in R. Assign a name to each intermediate 
@@ -207,7 +209,7 @@ g_
 ```
 
 ```{r ex-chained-full-check}
-grade_result(
-  pass_if(~identical(.result, 0.0002435549))
-)
+grade_this({
+  pass_if_equal(0.0002435549, tolerance = 0.00001)
+})
 ```
